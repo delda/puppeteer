@@ -8,8 +8,7 @@ import {waitTime} from "./src/utils/timeUtils.js";
 import {STATUS} from "./src/browser/setConfiguration.js";
 
 const main = async () => {
-    const config = '{"age":{"min":21, "max":27}, "skills":[{"type":6, "min":9, "max":11},{"type":8,"min":7,"max":8},{"type":5,"min":0,"max":8},{"type":4,"min":0,"max":8}], "price":{"minPrice":50000,"maxPrice":200000}}';
-    // const config = '{"age":{"min":21, "max":27}, "skills":[{"type":6, "min":7, "max":9}], "price":{"minPrice":50000,"maxPrice":200000}}';
+    const config = '{"age":{"min":21, "max":27}, "skills":[{"type":6, "min":7, "max":9}], "price":{"minPrice":50000,"maxPrice":200000}}';
     const configJson = JSON.parse(config);
 
     cleanDirectory('img');
@@ -34,18 +33,19 @@ const main = async () => {
         doLog();
         switch (status) {
             case STATUS.LOST:
-                console.log('lost');
+                doLog('Player lost!')
                 player = null;
                 break;
             case STATUS.PENDING:
                 const endDate = player.date;
                 const currentDate = new Date();
-                const timeToEnd = parseInt((endDate.getTime() - currentDate.getTime()) / 1000) - 60 * 60;
-                doLog('- Wait ' + timeToEnd.toDate());
-                await waitTime(timeToEnd);
+                const secondsToReload = parseInt((endDate.getTime() - currentDate.getTime()) / 1000) - 60 * 60;
+                const timeToReload = new Date(currentDate.getTime() + secondsToReload * 1000);
+                doLog('- Wait ' + secondsToReload.toDate() + ' (' + timeToReload.toLocaleString('it-IT', {year: 'numeric', month: '2-digit', day: '2-digit', hour12: false, hour: '2-digit', minute:'2-digit', second:'2-digit'}) + ')');
+                await waitTime(secondsToReload);
                 break;
             case STATUS.PURCHASED:
-                console.log('purchased');
+                doLog('Player purchased!');
                 restart = false;
                 break;
         }

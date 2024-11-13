@@ -13,3 +13,11 @@ export const doLog = (log = '') => {
     console.log(`[${getFormattedDate()}] ${log}`);
 };
 
+export const progressBar = (size, idx) => {
+    let bar = "[";
+    for (let i = 0; i < size; i++) {
+        bar = bar + ((i < idx) ? "#" : "-");
+    }
+    bar = bar + ']';
+    return bar;
+};

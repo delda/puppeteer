@@ -99,7 +99,7 @@ export const checkAuctionPlayer = async (page, player) => {
             doLog('    - !!! Relaunch !!!');
             auctionButton = await page.$('input#ctl00_ctl00_CPContent_CPMain_btnBid');
             await screenshot(page, 'relaunch');
-            await auctionButton.click();
+            await page.evaluate(element => element.click(), auctionButton);
             okButton = await page.$('div#ft-bid-confirm > div > input[value="Ok"]');
             if (okButton) {
                 doLog(okButton);
@@ -118,12 +118,7 @@ export const checkRelaunchProposal = async (browser, player) => {
     await setConfiguration(tabNew);
     doLog();
     doLog('## Player in auction');
-    doLog('  - Name: ' + player.name);
-    doLog('  - ID: ' + player.id);
-    doLog('  - Age: ' + player.age);
-    doLog('  - Date: ' + player.date.toLocaleString("it-IT", {timeZone: "Europe/Rome"}).toString());
-    doLog('  - Price: ' + player.price.toPrintablePrice());
-    doLog('  - Median: ' + player.median.toPrintablePrice());
+    player.printPlayer();
 
     const page = (await browser.pages())[0];
     const url = await page.evaluate(() => { return window.location.href; });

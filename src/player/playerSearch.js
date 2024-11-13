@@ -50,7 +50,9 @@ export const searchNewPlayer = async (browser, page, config) => {
     let result = [];
     for (const playerHref of playersHref) {
         await waitRandomTime();
-        result.push(await playerValues(browser, playerHref));
+        const player = await playerValues(browser, playerHref);
+        player.shortPrint();
+        result.push(player);
     }
     return filteringPlayers(result, config);
 };
@@ -62,7 +64,7 @@ export const filteringPlayers = (players, filters) => {
     const maxPrice = filters.price.maxPrice;
     const honesty = ['onesta', 'retta'];
     let filteredPlayers = players.filter((player) => {
-        if (player.median === '---') return false;    // se non c'è nessun giocatore simile, evito di comprarlo
+        if (player.median === '') return false;       // se non c'è nessun giocatore simile, evito di comprarlo
         return player.price > minPrice                // il prezzo maggiore del minimo previsto
             && player.price < maxPrice                // il prezzo minore del massimo previsto
             && player.price < (player.median / 2)     // il prezzo minore della metà della mediana

@@ -4,6 +4,7 @@ import {screenshot} from "../utils/screenshotUtils.js";
 import "../utils/dateExtensions.js";
 import "../utils/numberExtensions.js";
 import {Player} from "../objects/player.js";
+import {waitRandomTime} from "../utils/timeUtils.js";
 
 export const playerValues = async (browser, url) => {
     const tabNew = await browser.newPage();
@@ -16,43 +17,65 @@ export const playerValues = async (browser, url) => {
     const divH1 = await tabNew.$('h1.hasByline.flex-inline');
     const nameHTML = await tabNew.evaluate(element => element.innerText, divH1);
     const nameSplit = nameHTML.split('\n');
-    const name = nameSplit[1].trim();
-    doLog('  - Name: ' + name);
+    const name = nameSplit[1].trim().replace(/[0-9]+\. /, '');
     // ID
     const re = /playerId=([0-9]+)/;
     const playerMatchId = url.match(re);
     const playerId = playerMatchId[1];
-    doLog('  - ID: ' + playerId);
     // Età
     const divAge = await tabNew.$('div.byline');
     const ageHTML = await tabNew.evaluate(element => element.innerText, divAge);
     const numbers = ageHTML.match(/[0-9]+/g);
     const age = numbers[0]+'.'+numbers[1];
-    doLog('  - Age: ' + age);
     // Date
     const playerDateDiv = await tabNew.$('#ctl00_ctl00_CPContent_CPMain_updBid > div.alert > p');
     const playerDateValue = await tabNew.evaluate(element => element.innerText, playerDateDiv);
     const dateString = playerDateValue.replace('Scadenza:', '').trim();
     const baseDate = dateString.toDate();
     const datetime = dateString.toDate().toLocaleString("it-IT", {timeZone: "Europe/Rome"});
-    doLog('  - Date: ' + datetime.toString());
     // Price
     const playerPriceDiv = await tabNew.$('input#ctl00_ctl00_CPContent_CPMain_txtBid');
     const playerPriceValue = await tabNew.evaluate(element => element.value, playerPriceDiv);
     const price = parseInt(playerPriceValue.replace(/ /g, ''));
-    doLog('  - Price: ' + price.toPrintablePrice());
     // Gentleness
     const playerInfoDiv = await tabNew.$$('#ctl00_ctl00_CPContent_CPMain_pnlplayerInfo > p > a');
     const gentleness = await tabNew.evaluate(element => element.innerHTML, playerInfoDiv[0]);
-    doLog('  - Gentleness: ' + gentleness);
     // Aggressiveness
     const aggressiveness = await tabNew.evaluate(element => element.innerHTML, playerInfoDiv[1]);
-    doLog('  - Aggressiveness: ' + aggressiveness);
     // Honesty
     const honesty = await tabNew.evaluate(element => element.innerHTML, playerInfoDiv[2]);
-    doLog('  - Honesty: ' + honesty);
+    // Form
+    const playerFormSpan = await tabNew.$('tr#ctl00_ctl00_CPContent_CPMain_ucPlayerSkills_trForm > td.nowrap > div > div.bar-level > span.bar-denomination');
+    const form = await tabNew.evaluate(element => element.innerHTML, playerFormSpan);
+    // Stamina
+    const playerStaminaSpan = await tabNew.$('#ctl00_ctl00_CPContent_CPMain_ucPlayerSkills_trStamina > td > div > div.bar-level > span.bar-denomination');
+    const stamina = await tabNew.evaluate(element => element.innerHTML, playerStaminaSpan);
+    // const prova = await tabNew.content();
+    // console.log(prova);
+    // Keeper
+    const playerKeeperSpan = await tabNew.$('#ctl00_ctl00_CPContent_CPMain_ucPlayerSkills_trKeeper span.bar-denomination');
+    const keeper = await tabNew.evaluate(element => element.innerHTML, playerKeeperSpan);
+    // Defender
+    const playerDefenderSpan = await tabNew.$('#ctl00_ctl00_CPContent_CPMain_ucPlayerSkills_trDefender span.bar-denomination');
+    const defender = await tabNew.evaluate(element => element.innerHTML, playerDefenderSpan);
+    // Playmaker
+    const playerPlaymakerSpan = await tabNew.$('#ctl00_ctl00_CPContent_CPMain_ucPlayerSkills_trPlaymaker span.bar-denomination');
+    const playmaker = await tabNew.evaluate(element => element.innerHTML, playerPlaymakerSpan);
+    // Winger
+    const playerWingerSpan = await tabNew.$('#ctl00_ctl00_CPContent_CPMain_ucPlayerSkills_trWinger span.bar-denomination');
+    const winger = await tabNew.evaluate(element => element.innerHTML, playerWingerSpan);
+    // Passer
+    const playerPasserSpan = await tabNew.$('#ctl00_ctl00_CPContent_CPMain_ucPlayerSkills_trPasser span.bar-denomination');
+    const passer = await tabNew.evaluate(element => element.innerHTML, playerPasserSpan);
+    // Scorer
+    const playerScorerSpan = await tabNew.$('#ctl00_ctl00_CPContent_CPMain_ucPlayerSkills_trScorer span.bar-denomination');
+    const scorer = await tabNew.evaluate(element => element.innerHTML, playerScorerSpan);
+    // Kicker
+    const playerKickerSpan = await tabNew.$('#ctl00_ctl00_CPContent_CPMain_ucPlayerSkills_trKicker span.bar-denomination');
+    const kicker = await tabNew.evaluate(element => element.innerHTML, playerKickerSpan);
     // Transfer compare
     const playerCompareLink = await tabNew.$$('div#ctl00_ctl00_CPContent_CPSidebar_pnlRight > div.box.sidebarBox > div.boxBody > a');
+    await waitRandomTime();
     await playerCompareLink[1].click();
     doLog();
     doLog('## Transfer compare');
@@ -64,23 +87,25 @@ export const playerValues = async (browser, url) => {
     } else {
         playerAdverageDiv = '';
     }
-    let adverage = '---';
+    let adverage = '';
     if (playerAdverageDiv) {
         adverage = await tabNew.evaluate(element => parseInt(element.innerHTML.replace(/&nbsp;|€/g, '')), playerAdverageDiv);
     }
-    doLog('  - Adverage: ' + ((adverage === '---') ? adverage : adverage.toPrintablePrice()));
     let playerMedianDiv;
     if ((await tabNew.$('table > tbody.tablesorter-infoOnly > tr:nth-child(2) > th:nth-child(7)')) !== null) {
         playerMedianDiv = await tabNew.$('table > tbody.tablesorter-infoOnly > tr:nth-child(2) > th:nth-child(7)');
     } else {
         playerMedianDiv = '';
     }
-    let median = '---';
+    let median = '';
     if (playerMedianDiv) {
         median = await tabNew.evaluate(element => parseInt(element.innerHTML.replace(/&nbsp;|€/g, '')), playerMedianDiv);
     }
-    doLog('  - Median: ' + ((median === '---') ? median : median.toPrintablePrice()));
 
-    return new Player(name, playerId, age, baseDate, price, gentleness, aggressiveness, honesty, adverage, median);
+    const player = new Player(name, playerId, age);
+    player.setAuction(baseDate, price, adverage, median);
+    player.setCharacter(gentleness, aggressiveness, honesty, form, stamina);
+    player.setSkills(keeper, defender, playmaker, winger, passer, scorer, kicker);
+    return player;
 }
 
