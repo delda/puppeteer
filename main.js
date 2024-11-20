@@ -54,22 +54,3 @@ const main = async () => {
 };
 
 await main();
-
-/*
-STEP
-- inizializzazione del browser
-- login
-- cookie bar
-- ricerca
-- file con le configurazioni
-- estrazione dati giocatori
-- struttura dato giocatore
-- estrazione del player su cui puntare
-- utilizzo degli screenshot
-- offerta x un giocatore
-- estrazione offerte attive
-- sistema di log
-- divisione delle funzioni in più file
-- continuous search
-- tempo random nella ricerca
-*/
