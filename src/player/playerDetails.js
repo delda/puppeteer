@@ -81,15 +81,15 @@ export const playerValues = async (browser, url) => {
     doLog('## Transfer compare');
     await tabNew.waitForNavigation();
     await screenshot(tabNew, 'transfer_compare');
-    let playerAdverageDiv;
+    let playerAverageDiv;
     if ((await tabNew.$('table > tbody.tablesorter-infoOnly > tr:nth-child(1) > th:nth-child(7)')) !== null) {
-        playerAdverageDiv = await tabNew.$('table > tbody.tablesorter-infoOnly > tr:nth-child(1) > th:nth-child(7)');
+        playerAverageDiv = await tabNew.$('table > tbody.tablesorter-infoOnly > tr:nth-child(1) > th:nth-child(7)');
     } else {
-        playerAdverageDiv = '';
+        playerAverageDiv = '';
     }
-    let adverage = '';
-    if (playerAdverageDiv) {
-        adverage = await tabNew.evaluate(element => parseInt(element.innerHTML.replace(/&nbsp;|€/g, '')), playerAdverageDiv);
+    let average = '';
+    if (playerAverageDiv) {
+        average = await tabNew.evaluate(element => parseInt(element.innerHTML.replace(/&nbsp;|€/g, '')), playerAverageDiv);
     }
     let playerMedianDiv;
     if ((await tabNew.$('table > tbody.tablesorter-infoOnly > tr:nth-child(2) > th:nth-child(7)')) !== null) {
@@ -103,7 +103,7 @@ export const playerValues = async (browser, url) => {
     }
 
     const player = new Player(name, playerId, age);
-    player.setAuction(baseDate, price, adverage, median);
+    player.setAuction(baseDate, price, average, median);
     player.setCharacter(gentleness, aggressiveness, honesty, form, stamina);
     player.setSkills(keeper, defender, playmaker, winger, passer, scorer, kicker);
     return player;

@@ -1,9 +1,10 @@
-export const gentlenessTable = ['attaccabrighe', 'scontrosa', 'gradevole', 'simpatica', 'popolare'];
-export const aggressivenessTable = ['irascibile', 'impulsiva', 'equilibrata', 'calma', 'tranquilla'];
-export const honestyTable = ['infame', 'disonesta', 'onesta', 'retta', 'virtuosa'];
-export const formTable = ['inesistente', 'disastroso', 'tremendo', 'scarso', 'debole', 'insufficiente', 'accettabile', 'buono', 'eccellente'];
-export const staminaTable = ['inesistente', 'disastroso', 'tremendo', 'scarso', 'debole', 'insufficiente', 'accettabile', 'buono', 'eccellente', 'formidabile'];
-export const skills = ['inesistente', 'disastroso', 'tremendo', 'scarso', 'debole', 'insufficiente', 'accettabile', 'buono', 'eccellente', 'formidabile', 'straordinario', 'splendido', 'magnifico', 'fuoriclasse', 'sovrannaturale', 'titanico', 'extraterrestre', 'mitico', 'magico', 'utopico', 'divino'];
+export const GENTLENESS_TABLE = ['attaccabrighe', 'scontrosa', 'gradevole', 'simpatica', 'popolare'];
+export const AGGRESSIVENESS_TABLE = ['irascibile', 'impulsiva', 'equilibrata', 'calma', 'tranquilla'];
+export const HONESTY_TABLE = ['infame', 'disonesta', 'onesta', 'retta', 'virtuosa'];
+export const FORM_TABLE = ['inesistente', 'disastroso', 'tremendo', 'scarso', 'debole', 'insufficiente', 'accettabile', 'buono', 'eccellente'];
+export const STAMINA_TABLE = ['inesistente', 'disastroso', 'tremendo', 'scarso', 'debole', 'insufficiente', 'accettabile', 'buono', 'eccellente', 'formidabile'];
+export const SKILL_TABLE = ['inesistente', 'disastroso', 'tremendo', 'scarso', 'debole', 'insufficiente', 'accettabile', 'buono', 'eccellente', 'formidabile', 'straordinario', 'splendido', 'magnifico', 'fuoriclasse', 'sovrannaturale', 'titanico', 'extraterrestre', 'mitico', 'magico', 'utopico', 'divino'];
+export const SKILL_DROP_DOWN = ['', 'Parate', 'Difesa', 'Regia', 'Cross', 'Attacco', 'Calci piazzati', 'Passaggi', 'Esperienza', 'Carisma'];
 
-Object.freeze({gentlenessTable, aggressivenessTable, honestyTable, formTable, staminaTable, skills});
+Object.freeze({GENTLENESS_TABLE, AGGRESSIVENESS_TABLE, HONESTY_TABLE, FORM_TABLE, STAMINA_TABLE, SKILL_TABLE, SKILL_DROP_DOWN});
 

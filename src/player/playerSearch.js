@@ -2,8 +2,8 @@ import {screenshot} from '../utils/screenshotUtils.js';
 import {doLog} from '../utils/logUtils.js';
 import {playerValues} from './playerDetails.js';
 import {cookieBar} from "../browser/cookieBar.js";
-import {SKILL_DROP_DOWN} from "../browser/setConfiguration.js";
 import {waitRandomTime} from "../utils/timeUtils.js";
+import {SKILL_DROP_DOWN, SKILL_TABLE} from "../utils/constants.js";
 
 export const searchNewPlayer = async (browser, page, config) => {
     doLog('  - Click on transfer page');
@@ -24,11 +24,11 @@ export const searchNewPlayer = async (browser, page, config) => {
     let skills = config.skills;
     for (var i=0; i < config.skills.length; i++) {
         let skill = skills[i];
-        doLog('  - Select ' + SKILL_DROP_DOWN[skill.type] + ': ' + skill.type);
+        doLog('  - Select \'' + SKILL_DROP_DOWN[skill.type] + '\' (' + skill.type + ')');
         await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill'+(i+1), skill.type.toString());
-        doLog('  - Select level from: ' + skill.min.toString());
+        doLog('  - Select level from \'' + SKILL_TABLE[skill.min] + '\' (' + skill.min.toString() + ')');
         await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill'+(i+1)+'Min', skill.min.toString());
-        doLog('  - Select level to: ' + skill.max.toString());
+        doLog('  - Select level to \'' + SKILL_TABLE[skill.max] + '\' (' + skill.max.toString() + ')');
         await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill'+(i+1)+'Max', skill.max.toString());
     }
     await screenshot(page, 'search');
@@ -54,6 +54,13 @@ export const searchNewPlayer = async (browser, page, config) => {
         player.shortPrint();
         result.push(player);
     }
+    const stats = statsPlayers(result);
+    console.log(stats);
+    doLog('advPrice:   ' + parseInt(stats.advPrice).toPrintablePrice());
+    doLog('advAverage: ' + parseInt(stats.advAverage).toPrintablePrice());
+    doLog('advMedian:  ' + parseInt(stats.advMedian).toPrintablePrice());
+    doLog('minDate:    ' + stats.minDate.toDateTime());
+    doLog('maxDate:    ' + stats.maxDate.toDateTime());
     return filteringPlayers(result, config);
 };
 
@@ -64,10 +71,10 @@ export const filteringPlayers = (players, filters) => {
     const maxPrice = filters.price.maxPrice;
     const honesty = ['onesta', 'retta'];
     let filteredPlayers = players.filter((player) => {
-        if (player.median === '') return false;       // se non c'è nessun giocatore simile, evito di comprarlo
-        return player.price > minPrice                // il prezzo maggiore del minimo previsto
-            && player.price < maxPrice                // il prezzo minore del massimo previsto
-            && player.price < (player.median / 2)     // il prezzo minore della metà della mediana
+        if (player.median === '') return false;
+        return player.price > minPrice
+            && player.price < maxPrice
+            && player.price < (player.median / 2)
             && honesty.includes(player.honesty);
     });
     const numberPlayers = players.length;
@@ -83,4 +90,29 @@ export const filteringPlayers = (players, filters) => {
         return 0;
     });
     return filteredPlayers.shift();
+}
+
+export const statsPlayers = (players) => {
+    const initialCarry = {
+        sumPrice: 0,
+        sumMedian: 0,
+        sumAverage: 0,
+        minDate: Number.MAX_SAFE_INTEGER,
+        maxDate: 0
+    };
+    const stats = players.reduce((carry, player) => {
+        console.log(player);
+        carry.sumPrice += parseInt(player.price);
+        carry.sumMedian += player.median ? parseInt(player.median) : 0;
+        carry.sumAverage += player.average ? parseInt(player.average) : 0;
+        carry.minDate = Math.min(carry.minDate, player.date);
+        carry.maxDate = Math.max(carry.maxDate, player.date);
+        return carry;
+    }, initialCarry);
+    const playerCount = players.length;
+    stats.advPrice = stats.sumPrice / playerCount;
+    stats.advMedian = stats.sumMedian / playerCount;
+    stats.advAverage = stats.sumAverage / playerCount;
+
+    return stats;
 }

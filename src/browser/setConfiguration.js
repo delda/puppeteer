@@ -8,17 +8,6 @@ export const setConfiguration = async (page) => {
     await page.setUserAgent(customUA);
 }
 
-export const SKILL_DROP_DOWN = [];
-SKILL_DROP_DOWN[1] = 'Parate';
-SKILL_DROP_DOWN[3] = 'Difesa';
-SKILL_DROP_DOWN[4] = 'Regia';
-SKILL_DROP_DOWN[5] = 'Cross';
-SKILL_DROP_DOWN[6] = 'Attacco';
-SKILL_DROP_DOWN[7] = 'Calci piazzati';
-SKILL_DROP_DOWN[8] = 'Passaggi';
-SKILL_DROP_DOWN[9] = 'Esperienza';
-SKILL_DROP_DOWN[10] = 'Carisma';
-
 export const STATUS = Object.freeze({
     PURCHASED: 1,
     LOST: 2,

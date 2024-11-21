@@ -1,11 +1,11 @@
 import {doLog, progressBar} from "../utils/logUtils.js";
 import {
-    aggressivenessTable,
-    formTable,
-    gentlenessTable,
-    honestyTable,
-    skills,
-    staminaTable
+    AGGRESSIVENESS_TABLE,
+    FORM_TABLE,
+    GENTLENESS_TABLE,
+    HONESTY_TABLE,
+    SKILL_TABLE,
+    STAMINA_TABLE
 } from "../utils/constants.js";
 
 export class Player {
@@ -18,7 +18,7 @@ export class Player {
     setAuction(datetime, price, average, median) {
         this.date = datetime;
         this.price = price;
-        this.adverage = average;
+        this.average = average;
         this.median = median;
     }
 
@@ -51,37 +51,37 @@ export class Player {
         doLog('  - Date:           ' + this.date.toLocaleString("it-IT", {timeZone: "Europe/Rome"}).toString());
         doLog('  - Price:          ' + this.price.toPrintablePrice());
         doLog('  - Median:         ' + (this.median === '' ? '---' : this.median.toPrintablePrice()));
-        doLog('  - Adverage:       ' + (this.adverage === '' ? '---' : this.adverage.toPrintablePrice()));
+        doLog('  - Average:        ' + (this.average === '' ? '---' : this.average.toPrintablePrice()));
     }
 
     characterPrint() {
-        const gentlenessIdx = gentlenessTable.findIndex(x => x === this.gentleness) + 1;
-        doLog('  - Gentleness:     ' + progressBar(gentlenessTable.length, gentlenessIdx) + ' ' + this.gentleness);
-        const aggressivenessIdx = aggressivenessTable.findIndex(x => x === this.aggressiveness) + 1;
-        doLog('  - Aggressiveness: ' + progressBar(aggressivenessTable.length, aggressivenessIdx) + ' ' + this.aggressiveness);
-        const honestyIdx = honestyTable.findIndex(x => x === this.honesty) + 1;
-        doLog('  - Honesty:        ' + progressBar(honestyTable.length, honestyIdx) + ' ' + this.honesty);
-        const formIdx = formTable.findIndex(x => x === this.form) + 1;
-        doLog('  - Form:           ' + progressBar(formTable.length, formIdx) + ' ' + this.form);
-        const staminaIdx = staminaTable.findIndex(x => x === this.stamina) + 1;
-        doLog('  - Stamina:        ' + progressBar(staminaTable.length, staminaIdx) + ' ' + this.stamina);
+        const gentlenessIdx = GENTLENESS_TABLE.findIndex(x => x === this.gentleness) + 1;
+        doLog('  - Gentleness:     ' + progressBar(GENTLENESS_TABLE.length, gentlenessIdx) + ' ' + this.gentleness);
+        const aggressivenessIdx = AGGRESSIVENESS_TABLE.findIndex(x => x === this.aggressiveness) + 1;
+        doLog('  - Aggressiveness: ' + progressBar(AGGRESSIVENESS_TABLE.length, aggressivenessIdx) + ' ' + this.aggressiveness);
+        const honestyIdx = HONESTY_TABLE.findIndex(x => x === this.honesty) + 1;
+        doLog('  - Honesty:        ' + progressBar(HONESTY_TABLE.length, honestyIdx) + ' ' + this.honesty);
+        const formIdx = FORM_TABLE.findIndex(x => x === this.form) + 1;
+        doLog('  - Form:           ' + progressBar(FORM_TABLE.length, formIdx) + ' ' + this.form);
+        const staminaIdx = STAMINA_TABLE.findIndex(x => x === this.stamina) + 1;
+        doLog('  - Stamina:        ' + progressBar(STAMINA_TABLE.length, staminaIdx) + ' ' + this.stamina);
     }
 
     skillPrint() {
-        const keeperIdx = skills.findIndex(x => x === this.keeper) + 1;
-        doLog('  - Keeper:         ' + progressBar(skills.length, keeperIdx) + ' ' + this.keeper);
-        const defenderIdx = skills.findIndex(x => x === this.defender) + 1;
-        doLog('  - Defender:       ' + progressBar(skills.length, defenderIdx) + ' ' + this.defender);
-        const playmakerIdx = skills.findIndex(x => x === this.playmaker) + 1;
-        doLog('  - Playmaker:      ' + progressBar(skills.length, playmakerIdx) + ' ' + this.playmaker);
-        const wingerIdx = skills.findIndex(x => x === this.winger) + 1;
-        doLog('  - Winger:         ' + progressBar(skills.length, wingerIdx) + ' ' + this.winger);
-        const passerIdx = skills.findIndex(x => x === this.passer) + 1;
-        doLog('  - Passer:         ' + progressBar(skills.length, passerIdx) + ' ' + this.passer);
-        const scorerIdx = skills.findIndex(x => x === this.scorer) + 1;
-        doLog('  - Scorer:         ' + progressBar(skills.length, scorerIdx) + ' ' + this.scorer);
-        const kickerIdx = skills.findIndex(x => x === this.kicker) + 1;
-        doLog('  - Kicker:         ' + progressBar(skills.length, kickerIdx) + ' ' + this.kicker);
+        const keeperIdx = SKILL_TABLE.findIndex(x => x === this.keeper) + 1;
+        doLog('  - Keeper:         ' + progressBar(SKILL_TABLE.length, keeperIdx) + ' ' + this.keeper);
+        const defenderIdx = SKILL_TABLE.findIndex(x => x === this.defender) + 1;
+        doLog('  - Defender:       ' + progressBar(SKILL_TABLE.length, defenderIdx) + ' ' + this.defender);
+        const playmakerIdx = SKILL_TABLE.findIndex(x => x === this.playmaker) + 1;
+        doLog('  - Playmaker:      ' + progressBar(SKILL_TABLE.length, playmakerIdx) + ' ' + this.playmaker);
+        const wingerIdx = SKILL_TABLE.findIndex(x => x === this.winger) + 1;
+        doLog('  - Winger:         ' + progressBar(SKILL_TABLE.length, wingerIdx) + ' ' + this.winger);
+        const passerIdx = SKILL_TABLE.findIndex(x => x === this.passer) + 1;
+        doLog('  - Passer:         ' + progressBar(SKILL_TABLE.length, passerIdx) + ' ' + this.passer);
+        const scorerIdx = SKILL_TABLE.findIndex(x => x === this.scorer) + 1;
+        doLog('  - Scorer:         ' + progressBar(SKILL_TABLE.length, scorerIdx) + ' ' + this.scorer);
+        const kickerIdx = SKILL_TABLE.findIndex(x => x === this.kicker) + 1;
+        doLog('  - Kicker:         ' + progressBar(SKILL_TABLE.length, kickerIdx) + ' ' + this.kicker);
     }
 
     printPlayer() {
