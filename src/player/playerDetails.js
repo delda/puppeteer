@@ -1,8 +1,8 @@
 import {doLog} from '../utils/logUtils.js';
 import {setConfiguration} from "../browser/setConfiguration.js";
 import {screenshot} from "../utils/screenshotUtils.js";
-import "../utils/dateExtensions.js";
-import "../utils/numberExtensions.js";
+import "../extensions/stringExtensions.js";
+import "../extensions/numberExtensions.js";
 import {Player} from "../objects/player.js";
 import {waitRandomTime} from "../utils/timeUtils.js";
 
