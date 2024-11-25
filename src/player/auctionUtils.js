@@ -128,4 +128,3 @@ export const checkRelaunchProposal = async (browser, player) => {
     await screenshot(tabNew, 'player_in_auction');
     return await checkAuctionPlayer(tabNew, player);
 }
-

@@ -2,7 +2,7 @@ Number.prototype.toPrintablePrice = function () {
     return this.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + '€';
 };
 
-Number.prototype.toDate =  () => {
+Number.prototype.toDate = function () {
     let time = this;
     let days = Math.floor(time / 86400);
     let hours = Math.floor((time % 86400) / 3600);
@@ -18,7 +18,7 @@ Number.prototype.toDate =  () => {
     return result;
 };
 
-Number.prototype.toDateTime = () => {
+Number.prototype.toDateTime = function () {
     const dateNumber = this;
     const dateDate = new Date(dateNumber);
     return dateDate.toLocaleString('it-IT', {year: 'numeric', month: '2-digit', day: '2-digit', hour12: false, hour: '2-digit', minute:'2-digit', second:'2-digit'});
