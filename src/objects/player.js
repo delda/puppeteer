@@ -68,20 +68,20 @@ export class Player {
     }
 
     skillPrint() {
-        const keeperIdx = SKILL_TABLE.findIndex(x => x === this.keeper) + 1;
-        doLog('  - Keeper:         ' + progressBar(SKILL_TABLE.length, keeperIdx) + ((keeperIdx >= 10) ? '' : ' ') + ' (' + keeperIdx + ')' + this.keeper);
-        const defenderIdx = SKILL_TABLE.findIndex(x => x === this.defender) + 1;
-        doLog('  - Defender:       ' + progressBar(SKILL_TABLE.length, defenderIdx) + ((defenderIdx < 10) ? '' : ' ')  + ' (' + defenderIdx + ')' + this.defender);
-        const playmakerIdx = SKILL_TABLE.findIndex(x => x === this.playmaker) + 1;
-        doLog('  - Playmaker:      ' + progressBar(SKILL_TABLE.length, playmakerIdx) + ((playmakerIdx < 10) ? '' : ' ')  + ' (' + playmakerIdx + ')'+ this.playmaker);
-        const wingerIdx = SKILL_TABLE.findIndex(x => x === this.winger) + 1;
-        doLog('  - Winger:         ' + progressBar(SKILL_TABLE.length, wingerIdx) + ((wingerIdx < 10) ? '' : ' ')  + ' (' + wingerIdx + ')' + this.winger);
-        const passerIdx = SKILL_TABLE.findIndex(x => x === this.passer) + 1;
-        doLog('  - Passer:         ' + progressBar(SKILL_TABLE.length, passerIdx) + ((passerIdx < 10) ? '' : ' ')  + ' (' + passerIdx + ')' + this.passer);
-        const scorerIdx = SKILL_TABLE.findIndex(x => x === this.scorer) + 1;
-        doLog('  - Scorer:         ' + progressBar(SKILL_TABLE.length, scorerIdx) + ((scorerIdx < 10) ? '' : ' ')  + ' (' + scorerIdx + ')' + this.scorer);
-        const kickerIdx = SKILL_TABLE.findIndex(x => x === this.kicker) + 1;
-        doLog('  - Kicker:         ' + progressBar(SKILL_TABLE.length, kickerIdx) + ((kickerIdx < 10) ? '' : ' ')  + ' (' + kickerIdx + ')' + this.kicker);
+        const keeperIdx = SKILL_TABLE.findIndex(x => x === this.keeper);
+        doLog('  - Keeper:         ' + progressBar(SKILL_TABLE.length, keeperIdx) + ((keeperIdx < 10) ? ' ' : '') + ' (' + keeperIdx + ') ' + this.keeper);
+        const defenderIdx = SKILL_TABLE.findIndex(x => x === this.defender);
+        doLog('  - Defender:       ' + progressBar(SKILL_TABLE.length, defenderIdx) + ((defenderIdx < 10) ? ' ' : '')  + ' (' + defenderIdx + ') ' + this.defender);
+        const playmakerIdx = SKILL_TABLE.findIndex(x => x === this.playmaker);
+        doLog('  - Playmaker:      ' + progressBar(SKILL_TABLE.length, playmakerIdx) + ((playmakerIdx < 10) ? ' ' : '')  + ' (' + playmakerIdx + ') '+ this.playmaker);
+        const wingerIdx = SKILL_TABLE.findIndex(x => x === this.winger);
+        doLog('  - Winger:         ' + progressBar(SKILL_TABLE.length, wingerIdx) + ((wingerIdx < 10) ? ' ' : '')  + ' (' + wingerIdx + ') ' + this.winger);
+        const passerIdx = SKILL_TABLE.findIndex(x => x === this.passer) ;
+        doLog('  - Passer:         ' + progressBar(SKILL_TABLE.length, passerIdx) + ((passerIdx < 10) ? ' ' : '')  + ' (' + passerIdx + ') ' + this.passer);
+        const scorerIdx = SKILL_TABLE.findIndex(x => x === this.scorer);
+        doLog('  - Scorer:         ' + progressBar(SKILL_TABLE.length, scorerIdx) + ((scorerIdx < 10) ? ' ' : '')  + ' (' + scorerIdx + ') ' + this.scorer);
+        const kickerIdx = SKILL_TABLE.findIndex(x => x === this.kicker);
+        doLog('  - Kicker:         ' + progressBar(SKILL_TABLE.length, kickerIdx) + ((kickerIdx < 10) ? ' ' : '')  + ' (' + kickerIdx + ') ' + this.kicker);
     }
 
     printPlayer() {

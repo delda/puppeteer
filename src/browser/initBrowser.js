@@ -4,22 +4,25 @@ import { loginPage } from './login.js';
 import 'dotenv/config';
 import { doLog } from '../utils/logUtils.js';
 import { screenshot } from '../utils/screenshotUtils.js';
+import {checkPreviousSession, saveCookies, setCookies} from "../utils/session.js";
 
 export const initBrowser = async (browser) => {
-    let url = process.env.website;
-    // url = 'https://www.hattrick.org';
     const page = (await browser.pages())[0];
     await setConfiguration(page);
+    const url = await setCookies(page);
     doLog();
-    doLog('## Hattrick Web Site');
-    await page.goto(url, { waitUntil: 'domcontentloaded' }).catch(err => doLog(`error loading url: ${err.message}`));
+    doLog('## Open Web Site');
+    await page.goto(url);
     await screenshot(page, 'initBrowser');
-    await cookieBar(page);
-    await loginPage(page);
+    if (!checkPreviousSession()) {
+        await cookieBar(page);
+        await loginPage(page);
+        await page.waitForNavigation();
+    }
     doLog();
     doLog('## Home page');
-    await page.waitForNavigation();
     await screenshot(page, 'home_page');
+    await saveCookies(page);
     return page;
 };
 

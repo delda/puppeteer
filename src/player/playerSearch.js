@@ -4,6 +4,7 @@ import {playerValues} from './playerDetails.js';
 import {cookieBar} from "../browser/cookieBar.js";
 import {waitRandomTime} from "../utils/timeUtils.js";
 import {SKILL_DROP_DOWN, SKILL_TABLE} from "../utils/constants.js";
+import {parse} from "dotenv";
 
 export const searchNewPlayer = async (browser, page, config) => {
     doLog('  - Click on transfer page');
@@ -19,17 +20,22 @@ export const searchNewPlayer = async (browser, page, config) => {
 
     doLog('  - Select min age: '+config.age.min);
     await page.select('#ctl00_ctl00_CPContent_CPMain_ddlAgeMin', config.age.min.toString());
+    await waitRandomTime();
     doLog('  - Select max age: '+config.age.max);
     await page.select('#ctl00_ctl00_CPContent_CPMain_ddlAgeMax', config.age.max.toString());
+    await waitRandomTime();
     let skills = config.skills;
     for (var i=0; i < config.skills.length; i++) {
         let skill = skills[i];
-        doLog('  - Select \'' + SKILL_DROP_DOWN[skill.type] + '\' (' + skill.type + ')');
+        doLog('  - Select \'' + SKILL_DROP_DOWN[skill.type] + '\'');
         await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill'+(i+1), skill.type.toString());
+        await waitRandomTime();
         doLog('  - Select level from \'' + SKILL_TABLE[skill.min] + '\' (' + skill.min.toString() + ')');
         await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill'+(i+1)+'Min', skill.min.toString());
+        await waitRandomTime();
         doLog('  - Select level to \'' + SKILL_TABLE[skill.max] + '\' (' + skill.max.toString() + ')');
         await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill'+(i+1)+'Max', skill.max.toString());
+        await waitRandomTime();
     }
     await screenshot(page, 'search');
     const searchButton = await page.$('#ctl00_ctl00_CPContent_CPMain_butSearch');
@@ -55,7 +61,8 @@ export const searchNewPlayer = async (browser, page, config) => {
         result.push(player);
     }
     const stats = statsPlayers(result);
-    console.log(stats);
+    doLog();
+    doLog('## STATISTICS');
     doLog('advPrice:   ' + parseInt(stats.advPrice).toPrintablePrice());
     doLog('advAverage: ' + parseInt(stats.advAverage).toPrintablePrice());
     doLog('advMedian:  ' + parseInt(stats.advMedian).toPrintablePrice());
@@ -101,7 +108,6 @@ export const statsPlayers = (players) => {
         maxDate: 0
     };
     const stats = players.reduce((carry, player) => {
-        console.log(player);
         carry.sumPrice += parseInt(player.price);
         carry.sumMedian += player.median ? parseInt(player.median) : 0;
         carry.sumAverage += player.average ? parseInt(player.average) : 0;

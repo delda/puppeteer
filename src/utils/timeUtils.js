@@ -4,9 +4,7 @@ export const waitTime = async (seconds) => {
     });
 }
 
-export const waitRandomTime = async () => {
-    const min = 5;
-    const max = 10;
+export const waitRandomTime = async (min = 5, max = 10) => {
     const time = Math.floor(Math.random() * (max - min + 1)) + min;
     return waitTime(time);
 }
