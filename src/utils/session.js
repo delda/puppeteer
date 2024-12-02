@@ -9,15 +9,15 @@ export const checkPreviousSession =  () => {
     let isValid = false;
     if (!fs.existsSync(FILE_COOKIES)) return false;
     if (!fs.existsSync(FILE_HOST)) return false;
-    const { birthtime} = fs.statSync(FILE_COOKIES);
+    const { mtime } = fs.statSync(FILE_COOKIES);
     const currentTime = new Date();
-    let diff = Math.abs(currentTime - birthtime) / 1000 - 3600;
+    let diff = Math.abs(currentTime - mtime) / 1000 - 3600;
     if (diff < 0) isValid = true;
     return isValid;
 }
 
 export const saveCookies = async (page) => {
-    doLog('  - Save cookies');
+    doLog('* Save cookies');
     const cookies = await page.cookies();
     const url = page.url();
     fs.writeFileSync(FILE_COOKIES, JSON.stringify(cookies, null, 2));
@@ -25,7 +25,7 @@ export const saveCookies = async (page) => {
 }
 
 export const setCookies = async (page) => {
-    doLog('  - Set cookies');
+    doLog('* Set cookies');
     let url = process.env.website;
     if (!checkPreviousSession()) return url;
     const cookiesString = fs.readFileSync(FILE_COOKIES, 'utf-8');
