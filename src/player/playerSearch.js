@@ -11,13 +11,19 @@ export const searchNewPlayer = async (browser, page, config) => {
     const transferButton = await page.$('.scTransfer');
     await cookieBar(page);
     await waitRandomTime();
-    await transferButton.click();
 
     // Search page
+    await transferButton.click();
     doLog();
     doLog('## Search page');
     await page.waitForNavigation();
+    await screenshot(page, 'search_page');
 
+    doLog('  - Clean previous selection');
+    const clearLink = await page.$('#ctl00_ctl00_CPContent_CPMain_butClear');
+    await clearLink.click();
+    await screenshot(page, 'search_clean');
+    await waitRandomTime();
     doLog('  - Select min age: '+config.age.min);
     await page.select('#ctl00_ctl00_CPContent_CPMain_ddlAgeMin', config.age.min.toString());
     await waitRandomTime();
@@ -37,7 +43,7 @@ export const searchNewPlayer = async (browser, page, config) => {
         await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill'+(i+1)+'Max', skill.max.toString());
         await waitRandomTime();
     }
-    await screenshot(page, 'search');
+    await screenshot(page, 'search_selection');
     const searchButton = await page.$('#ctl00_ctl00_CPContent_CPMain_butSearch');
     await waitRandomTime();
     await searchButton.click();
@@ -45,7 +51,7 @@ export const searchNewPlayer = async (browser, page, config) => {
     doLog();
     doLog('## Search page results');
     await page.waitForNavigation();
-    await screenshot(page, 'search-results');
+    await screenshot(page, 'search_results');
     const players = await page.$$('#mainBody > div > div.flex h3 > a');
     const playersHandle = await Promise.all(
         players.map(handle => handle.getProperty('href'))

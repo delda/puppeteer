@@ -7,6 +7,10 @@ import {playerValues} from "./playerDetails.js";
 export const findAuctionInProgress = async (browser, page) => {
     doLog('  - Click on auction page');
     const link = await page.$('div.subMenuBox > div.boxBody > ul > li:nth-child(6)');
+    if (!link) {
+        doLog('  - No auction link found!');
+        return null;
+    }
     await waitRandomTime();
     await link.click();
     await page.waitForNavigation();

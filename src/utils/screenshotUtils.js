@@ -7,6 +7,6 @@ export const screenshot = async (page, text) => {
     const minute = String(date.getMinutes()).padStart(2, '0');
     const second = String(date.getSeconds()).padStart(2, '0');
     const printableDate = `${year}${month}${day}${hour}${minute}${second}`;
-    await page.screenshot({ path: `img/${printableDate}_${text}.jpg`, fullPage: true });
+    await page.screenshot({ path: `img/${printableDate}-${text}.jpg`, fullPage: true });
 };
 
