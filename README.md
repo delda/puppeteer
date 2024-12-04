@@ -22,6 +22,7 @@ Open the `.env` file and change the current configuration:
 website="www.mysite.com"
 username="my-username"
 password="my-password"
+team_name="my-team-name"
 ```
 
 ## Usage

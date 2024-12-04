@@ -3,6 +3,7 @@ import {screenshot} from "../utils/screenshotUtils.js";
 import {setConfiguration, STATUS} from "../browser/setConfiguration.js";
 import {waitRandomTime, waitTime} from "../utils/timeUtils.js";
 import {playerValues} from "./playerDetails.js";
+import 'dotenv/config';
 
 export const findAuctionInProgress = async (browser, page) => {
     doLog('  - Click on auction page');
@@ -18,9 +19,9 @@ export const findAuctionInProgress = async (browser, page) => {
     doLog('## Auctions in progress');
     await screenshot(page, 'auction');
 
-    const labelNoAuctionH2 = await page.$('table.naked h2');
-    const labelNoAuction = await page.evaluate(element => element.innerHTML, labelNoAuctionH2);
-    if (labelNoAuction.search('Offerte superate') === -1) {
+    const labelsH2 = await page.$$eval('table.naked h2', elements => { return elements.map(e => e.innerHTML)})
+    const labelAuction = labelsH2.find(element => element.includes('Acquirente'));
+    if (!labelAuction) {
         doLog('  - No auctions in progress!');
         return null;
     }
@@ -29,7 +30,8 @@ export const findAuctionInProgress = async (browser, page) => {
     const playerInAuction = await page.evaluate(element => element.getAttribute('href'), auctionDiv);
     const url = await page.evaluate(() => { return window.location.href; });
     const baseUrl = url.match(/https.*hattrick.org/)[0];
-    return playerValues(browser, url);
+    const playerUrl = baseUrl + playerInAuction;
+    return playerValues(browser, playerUrl);
 }
 
 export const checkAuctionPlayer = async (page, player) => {
@@ -84,26 +86,26 @@ export const checkAuctionPlayer = async (page, player) => {
         }
         const playerPriceValue = await page.evaluate(element => element.value, playerPriceDiv);
         const price = parseInt(playerPriceValue.replace(/ /g, ''));
-        canRelaunch = (lastRelaunchTeam !== 'Fireballs');
+        canRelaunch = (lastRelaunchTeam !== process.env.team_name);
         priceTooHigh = price > priceNotToBeExceeded;
         if (priceTooHigh) {
             doLog('    - Price (' + price.toPrintablePrice() + ') over max price (' + priceNotToBeExceeded.toPrintablePrice() + ')!');
             return STATUS.LOST;
         }
         if (!activeCheckAuction) {
-            doLog('    - Suspend active check: it\'s to early (' + timeToEnd.toDate() + ')');
+            doLog('    - Suspend active check: it\'s too early (' + timeToEnd.toDate() + ')');
             return STATUS.PENDING;
         }
         itIsTime = timeToRelaunch < 5;
         doLog('    - Deadline: ' + timeToEnd.toDate());
         doLog('    - Time to relaunch: ' + timeToRelaunch.toDate());
-        doLog('    - Last relaunch is ' + (canRelaunch ? 'not' : '') + ' mine');
+        doLog('    - Last relaunch is ' + (canRelaunch ? 'not' : '') + ' mine (' + lastRelaunchTeam + ')');
         doLog('    - Current price: ' + price.toPrintablePrice() + '; max price: ' + priceNotToBeExceeded.toPrintablePrice());
         if (canRelaunch && itIsTime) {
             doLog('    - !!! Relaunch !!!');
             auctionButton = await page.$('input#ctl00_ctl00_CPContent_CPMain_btnBid');
-            await screenshot(page, 'relaunch');
             await page.evaluate(element => element.click(), auctionButton);
+            await screenshot(page, 'relaunch');
             okButton = await page.$('div#ft-bid-confirm > div > input[value="Ok"]');
             if (okButton) {
                 doLog(okButton);
