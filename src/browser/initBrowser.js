@@ -5,6 +5,7 @@ import 'dotenv/config';
 import { doLog } from '../utils/logUtils.js';
 import { screenshot } from '../utils/screenshotUtils.js';
 import {checkPreviousSession, saveCookies, setCookies} from "../utils/session.js";
+import {cleanDirectory} from "../utils/fileUtils.js";
 
 export const initBrowser = async (browser) => {
     const page = (await browser.pages())[0];
@@ -14,6 +15,15 @@ export const initBrowser = async (browser) => {
     doLog('## Open Web Site');
     await page.goto(url);
     await screenshot(page, 'initBrowser');
+    // Check if session is ok
+    const loginArea = await page.$('#ctl00_CPContent_ucLogin_txtUserName');
+    if (loginArea) {
+        doLog('  - Session not valid: reset of session!');
+        cleanDirectory('cookies');
+        const cookies = await page.cookies();
+        await page.deleteCookie(...cookies);
+        await page.goto(process.env.website);
+    }
     if (!checkPreviousSession()) {
         await cookieBar(page);
         await loginPage(page);

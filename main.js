@@ -15,11 +15,12 @@ const main = async () => {
 
     let restart = true;
     let player = null;
+    let playerLost = true;
     while (restart) {
         const browser = await puppeteer.launch({ headless: true });
         const page = await initBrowser(browser);
         const followedPlayer = await findAuctionInProgress(browser, page);
-        if (followedPlayer) {
+        if (followedPlayer && !playerLost) {
             player = followedPlayer;
         }
         if (!player) {
@@ -35,6 +36,7 @@ const main = async () => {
             case STATUS.LOST:
                 doLog('Player lost!')
                 player = null;
+                playerLost = true;
                 break;
             case STATUS.PENDING:
                 const endDate = player.date;
@@ -50,7 +52,7 @@ const main = async () => {
                 break;
         }
     }
-    console.log('The end!');
+    doLog('The end!');
 };
 
 await main();

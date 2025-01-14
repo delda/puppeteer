@@ -13,6 +13,11 @@ export const searchNewPlayer = async (browser, page, config) => {
     await waitRandomTime();
 
     // Search page
+    await screenshot(page, 'transfer_button');
+    if (!transferButton) {
+        doLog('  - Error in page: no transfer button found!');
+        return null;
+    }
     await transferButton.click();
     doLog();
     doLog('## Search page');
@@ -25,10 +30,16 @@ export const searchNewPlayer = async (browser, page, config) => {
     await screenshot(page, 'search_clean');
     await waitRandomTime();
     doLog('  - Select min age: '+config.age.min);
-    await page.select('#ctl00_ctl00_CPContent_CPMain_ddlAgeMin', config.age.min.toString());
+    const minAgeIntegerPart = Math.trunc(config.age.min);
+    const minAgeDecimalPart = Math.ceil((config.age.min - minAgeIntegerPart) * 100);
+    await page.select('#ctl00_ctl00_CPContent_CPMain_ddlAgeMin', minAgeIntegerPart.toString());
+    await page.select('#ctl00_ctl00_CPContent_CPMain_ddlAgeDaysMin', minAgeDecimalPart.toString());
     await waitRandomTime();
     doLog('  - Select max age: '+config.age.max);
-    await page.select('#ctl00_ctl00_CPContent_CPMain_ddlAgeMax', config.age.max.toString());
+    const maxAgeIntegerPart = Math.trunc(config.age.max);
+    const maxAgeDecimalPart = Math.ceil((config.age.max - maxAgeIntegerPart) * 100);
+    await page.select('#ctl00_ctl00_CPContent_CPMain_ddlAgeMax', maxAgeIntegerPart.toString());
+    await page.select('#ctl00_ctl00_CPContent_CPMain_ddlAgeDaysMax', maxAgeDecimalPart.toString());
     await waitRandomTime();
     let skills = config.skills;
     for (var i=0; i < config.skills.length; i++) {
