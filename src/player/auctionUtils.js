@@ -4,6 +4,7 @@ import {setConfiguration, STATUS} from "../browser/setConfiguration.js";
 import {waitRandomTime, waitTime} from "../utils/timeUtils.js";
 import {playerValues} from "./playerDetails.js";
 import 'dotenv/config';
+import {parse} from "dotenv";
 
 export const findAuctionInProgress = async (browser, page) => {
     doLog('  - Click on auction page');
@@ -34,7 +35,7 @@ export const findAuctionInProgress = async (browser, page) => {
     return playerValues(browser, playerUrl);
 }
 
-export const checkAuctionPlayer = async (page, player) => {
+export const checkAuctionPlayer = async (page, player, config) => {
     let refreshDiv;
     let lastRelaunchTeam, lastRelaunchTeamDiv;
     let auctionButton, okButton;
@@ -45,7 +46,8 @@ export const checkAuctionPlayer = async (page, player) => {
     let canRelaunch = false;
     let itIsTime = false;
     let priceTooHigh = false;
-    const priceNotToBeExceeded = parseInt(player.median / 2);
+    const auctionPercent = parseInt(config.auctionPercent);
+    const priceNotToBeExceeded = parseInt(player.median / 100 * auctionPercent);
     while (checkAuction) {
 	    doLog();
         doLog('#### Refresh last relaunch');
@@ -119,7 +121,7 @@ export const checkAuctionPlayer = async (page, player) => {
     return STATUS.PENDING;
 }
 
-export const checkRelaunchProposal = async (browser, player) => {
+export const checkRelaunchProposal = async (browser, player, config) => {
     const tabNew = await browser.newPage();
     await setConfiguration(tabNew);
     doLog();
@@ -132,5 +134,5 @@ export const checkRelaunchProposal = async (browser, player) => {
     const playerUrl = baseUrl + '/Club/Players/Player.aspx?playerId=' + player.id;
     await tabNew.goto(playerUrl, {waitUntil: 'domcontentloaded'}).catch((err) => doLog('error loading url: ' + err.message));
     await screenshot(tabNew, 'player_in_auction');
-    return await checkAuctionPlayer(tabNew, player);
+    return await checkAuctionPlayer(tabNew, player, config);
 }

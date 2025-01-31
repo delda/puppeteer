@@ -5,3 +5,13 @@ export const cleanDirectory = (directory) => {
     fs.mkdirSync(directory);
 }
 
+export const checkConfig = (jsonString) => {
+    const config = JSON.parse(jsonString);
+    const requiredProps = ["auctionPercent", "age", "skills", "price"];
+    for (let prop of requiredProps) {
+        if (!(prop in config)) {
+            return false;
+        }
+    }
+    return true;
+}

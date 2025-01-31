@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer';
-import {cleanDirectory} from './src/utils/fileUtils.js';
+import {checkConfig, cleanDirectory} from './src/utils/fileUtils.js';
 import {initBrowser} from './src/browser/initBrowser.js';
 import {findAuctionInProgress, checkRelaunchProposal} from './src/player/auctionUtils.js';
 import {searchNewPlayer} from './src/player/playerSearch.js';
@@ -8,9 +8,8 @@ import {waitTime} from "./src/utils/timeUtils.js";
 import {STATUS} from "./src/browser/setConfiguration.js";
 
 const main = async () => {
-    const config = '{"age":{"min":21, "max":27}, "skills":[{"type":6, "min":7, "max":9}], "price":{"minPrice":50000,"maxPrice":200000}}';
+    const config = '{"auctionPercent": 50, "age":{"min":21, "max":27}, "skills":[{"type":6, "min":7, "max":9}], "price":{"minPrice":50000,"maxPrice":200000}}';
     const configJson = JSON.parse(config);
-
     cleanDirectory('img');
 
     let restart = true;
@@ -30,11 +29,12 @@ const main = async () => {
             doLog('- No player found!');
             return;
         }
-        const status = await checkRelaunchProposal(browser, player);
+        const status = await checkRelaunchProposal(browser, player, configJson);
         doLog();
         switch (status) {
             case STATUS.LOST:
-                doLog('Player lost!')
+                doLog('    - !!! Player lost !!!')
+                doLog();
                 player = null;
                 playerLost = true;
                 break;
