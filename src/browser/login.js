@@ -8,7 +8,7 @@ export const loginPage = async (page) => {
     doLog('  - Click on login page');
     await screenshot(page, 'start');
     await waitRandomTime();
-    await page.click('#divNewUserSignupLink > a');
+    await page.click('.extra-message > a');
     doLog();
     doLog('## Login page');
     let username = process.env.username;
@@ -18,12 +18,12 @@ export const loginPage = async (page) => {
         await process.exit(1);
     }
     doLog('  - Fill username: ' + username);
-    await page.type('#ctl00_CPContent_ucLogin_txtUserName', username);
+    await page.type('#inputLoginname', username);
     doLog('  - Fill password: ' + '*'.repeat(password.length));
-    await page.type('#ctl00_CPContent_ucLogin_txtPassword', password);
+    await page.type('#inputPassword', password);
     doLog('  - Click login button');
-    await page.waitForSelector('#divLoginBox .loginButton');
-    const loginButton = await page.$('#divLoginBox .loginButton');
+    await page.waitForSelector('.primary-button');
+    const loginButton = await page.$('.primary-button');
     await screenshot(page, 'login');
     await cookieBar(page);
     await waitRandomTime();

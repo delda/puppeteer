@@ -16,7 +16,7 @@ export const initBrowser = async (browser) => {
     await page.goto(url);
     await screenshot(page, 'initBrowser');
     // Check if session is ok
-    const loginArea = await page.$('#ctl00_CPContent_ucLogin_txtUserName');
+    const loginArea = await page.$('#inputLoginname');
     if (loginArea) {
         doLog('  - Session not valid: reset of session!');
         cleanDirectory('cookies');

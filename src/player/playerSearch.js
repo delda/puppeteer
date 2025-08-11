@@ -3,7 +3,7 @@ import {doLog} from '../utils/logUtils.js';
 import {playerValues} from './playerDetails.js';
 import {cookieBar} from "../browser/cookieBar.js";
 import {waitRandomTime} from "../utils/timeUtils.js";
-import {SKILL_DROP_DOWN, SKILL_TABLE} from "../utils/constants.js";
+import {SKILL_DROP_DOWN, SKILL_TABLE, ABILITIES} from "../utils/constants.js";
 import {parse} from "dotenv";
 
 export const searchNewPlayer = async (browser, page, config) => {
@@ -54,6 +54,17 @@ export const searchNewPlayer = async (browser, page, config) => {
         await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill'+(i+1)+'Max', skill.max.toString());
         await waitRandomTime();
     }
+    const abilities = config.abilities;
+    if (abilities) {
+        for (var i=0; i < abilities.length; i++) {
+            let ability = abilities[i];
+            doLog('  - Ability \'' + ABILITIES[ability] + '\' selected');
+            const labelId = '#ctl00_ctl00_CPContent_CPMain_chkSpecialty' + ability.toString();
+            const chkSpecialty = await page.$(labelId);
+            const labelSpecialty = await chkSpecialty.getProperty('parentNode')
+            await labelSpecialty.click();
+        }
+    }
     await screenshot(page, 'search_selection');
     const searchButton = await page.$('#ctl00_ctl00_CPContent_CPMain_butSearch');
     await waitRandomTime();
@@ -98,7 +109,7 @@ export const filteringPlayers = (players, filters) => {
         if (player.median === '') return false;
         return player.price > minPrice
             && player.price < maxPrice
-            && player.price < (player.median / 2)
+            && player.price < (player.median * (parseInt(filters.auctionPercent) / 100))
             && honesty.includes(player.honesty);
     });
     const numberPlayers = players.length;
