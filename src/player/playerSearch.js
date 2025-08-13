@@ -3,8 +3,8 @@ import {doLog} from '../utils/logUtils.js';
 import {playerValues} from './playerDetails.js';
 import {cookieBar} from "../browser/cookieBar.js";
 import {waitRandomTime} from "../utils/timeUtils.js";
+import {registerTransferNumber} from "../utils/fileUtils.js";
 import {SKILL_DROP_DOWN, SKILL_TABLE, ABILITIES} from "../utils/constants.js";
-import {parse} from "dotenv";
 
 export const searchNewPlayer = async (browser, page, config) => {
     doLog('  - Click on transfer page');
@@ -23,6 +23,23 @@ export const searchNewPlayer = async (browser, page, config) => {
     doLog('## Search page');
     await page.waitForNavigation();
     await screenshot(page, 'search_page');
+
+    const transferPlayersNumber = await page.evaluate(() => {
+        const nodoTesto = document.evaluate(
+            "//td[contains(., 'Giocatori in lista di trasferimento')]",
+            document,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
+        ).singleNodeValue;
+        if (!nodoTesto) return null;
+        const nextTd = nodoTesto.nextElementSibling;
+        const regex = /\s+/;
+        return nextTd ? parseInt(nextTd.textContent.trim().replace(regex, '')) : null;
+    });
+    const transferPlayersLevel = fromTransferListToTextualLevel(transferPlayersNumber);
+    doLog('  - Register number of player in transfer list: ' + transferPlayersNumber + ' (' + transferPlayersLevel + ')');
+    registerTransferNumber(transferPlayersNumber);
 
     doLog('  - Clean previous selection');
     const clearLink = await page.$('#ctl00_ctl00_CPContent_CPMain_butClear');
@@ -149,4 +166,14 @@ export const statsPlayers = (players) => {
     stats.advAverage = stats.sumAverage / playerCount;
 
     return stats;
+}
+
+export const fromTransferListToTextualLevel = (number) => {
+    let transferPlayersLevel = '';
+    if (!number || isNaN(number)) transferPlayersLevel = "NAN";
+    if (number < 50000) transferPlayersLevel = "Very low moment";
+    if (number > 80000) transferPlayersLevel = "Off-Season Time: it's good time!";
+    if (number > 90000) transferPlayersLevel = "Off-Season Time: it's a very good time!";
+    if (number > 100000)  transferPlayersLevel = "Off-Season Time: it's an extraordinary moment!";
+    return transferPlayersLevel;
 }

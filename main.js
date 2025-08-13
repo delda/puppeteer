@@ -11,7 +11,7 @@ import fs from 'fs';
 const main = async () => {
     const config = fs.readFileSync('./config.json', 'utf-8');
     if (!checkConfig(config)) {
-        doLog('* Error into json configuration!');
+        doLog('* Error into json configuration!', 'error');
         return;
     }
     const configJson = JSON.parse(config);
