@@ -33,4 +33,23 @@ nvm use v22.9.0
 node main
 ```
 
+## Configuration
+
+Edit the `config.json` file to adjust the player search and auction parameters:
+
+```json
+{
+  "auctionPercent": 50,
+  "age": {
+    "min": 21,
+    "max": 26.111
+  },
+  "skills": [
+    { "type": 1, "min": 8, "max": 9 },
+    { "type": 3, "min": 5, "max": 9 }
+  ],
+  "price": { "minPrice": 1000, "maxPrice": 600000 }
+}
+```
+
 Enjoy!

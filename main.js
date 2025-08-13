@@ -6,9 +6,14 @@ import {searchNewPlayer} from './src/player/playerSearch.js';
 import {doLog} from './src/utils/logUtils.js';
 import {waitTime} from "./src/utils/timeUtils.js";
 import {STATUS} from "./src/browser/setConfiguration.js";
+import fs from 'fs';
 
 const main = async () => {
-    const config = '{"auctionPercent": 50, "age":{"min":21, "max":27}, "skills":[{"type":6, "min":7, "max":9}], "price":{"minPrice":50000,"maxPrice":200000}}';
+    const config = fs.readFileSync('./config.json', 'utf-8');
+    if (!checkConfig(config)) {
+        doLog('* Error into json configuration!');
+        return;
+    }
     const configJson = JSON.parse(config);
     cleanDirectory('img');
 
