@@ -13,7 +13,13 @@ export const initBrowser = async (browser) => {
     const url = await setCookies(page);
     doLog();
     doLog('## Open Web Site');
-    await page.goto(url);
+    try {
+        await page.goto(url);
+    } catch (error) {
+        doLog(`Error navigating to ${url}`, 'error');
+        doLog(error.message, 'error');
+        process.exit(1);
+    }
     await screenshot(page, 'initBrowser');
     // Check if session is ok
     const loginArea = await page.$('#inputLoginname');

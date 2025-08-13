@@ -9,8 +9,9 @@ export const getFormattedDate = () => {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
-export const doLog = (log = '') => {
-    console.log(`[${getFormattedDate()}] ${log}`);
+export const doLog = (log = '', type = 'info') => {
+    const msg = (type === 'error') ? `\x1b[41m${log}\x1b[0m` : log;
+    console.log(`[${getFormattedDate()}] ${msg}`);
 };
 
 export const progressBar = (size, idx) => {
