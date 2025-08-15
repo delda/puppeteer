@@ -132,7 +132,7 @@ export const checkRelaunchProposal = async (browser, player, config) => {
     const url = await page.evaluate(() => { return window.location.href; });
     const baseUrl = url.match(/https.*hattrick.org/)[0];
     const playerUrl = baseUrl + '/Club/Players/Player.aspx?playerId=' + player.id;
-    await navigateToUrl(tabNew, playerUrl, {waitUntil: 'domcontentloaded'});
+    await navigateToUrl(tabNew, playerUrl);
     await screenshot(tabNew, 'player_in_auction');
     return await checkAuctionPlayer(tabNew, player, config);
 }

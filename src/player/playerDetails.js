@@ -12,7 +12,7 @@ export const playerValues = async (browser, url) => {
     await setConfiguration(tabNew);
     doLog();
     doLog('## Player page');
-    await navigateToUrl(tabNew, url, {waitUntil: 'domcontentloaded'});
+    await navigateToUrl(tabNew, url);
     await screenshot(tabNew, 'player');
     // Name
     const divH1 = await tabNew.$('h1.hasByline.flex-inline');
