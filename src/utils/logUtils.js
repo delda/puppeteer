@@ -10,7 +10,14 @@ export const getFormattedDate = () => {
 };
 
 export const doLog = (log = '', type = 'info') => {
-    const msg = (type === 'error') ? `\x1b[41m${log}\x1b[0m` : log;
+    let msg;
+    if (type === 'error') {
+        msg = `\x1b[41m${log}\x1b[0m`;
+    } else if (type === 'warn') {
+        msg = `\x1b[30;43m${log}\x1b[0m`;
+    } else {
+        msg = log;
+    }
     console.log(`[${getFormattedDate()}] ${msg}`);
 };
 
