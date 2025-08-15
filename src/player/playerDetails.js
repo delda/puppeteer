@@ -5,13 +5,14 @@ import "../extensions/stringExtensions.js";
 import "../extensions/numberExtensions.js";
 import {Player} from "../objects/player.js";
 import {waitRandomTime} from "../utils/timeUtils.js";
+import {navigateToUrl} from "../browser/navigation.js";
 
 export const playerValues = async (browser, url) => {
     const tabNew = await browser.newPage();
     await setConfiguration(tabNew);
     doLog();
     doLog('## Player page');
-    await tabNew.goto(url, {waitUntil: 'domcontentloaded'}).catch((err) => doLog('error loading url: ' + err.message));
+    await navigateToUrl(tabNew, url, {waitUntil: 'domcontentloaded'});
     await screenshot(tabNew, 'player');
     // Name
     const divH1 = await tabNew.$('h1.hasByline.flex-inline');
@@ -108,4 +109,3 @@ export const playerValues = async (browser, url) => {
     player.setSkills(keeper, defender, playmaker, winger, passer, scorer, kicker);
     return player;
 }
-

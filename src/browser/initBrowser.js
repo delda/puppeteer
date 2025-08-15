@@ -6,6 +6,7 @@ import { doLog } from '../utils/logUtils.js';
 import { screenshot } from '../utils/screenshotUtils.js';
 import {checkPreviousSession, saveCookies, setCookies} from "../utils/session.js";
 import {cleanDirectory} from "../utils/fileUtils.js";
+import {navigateToUrl} from "./navigation.js";
 
 export const initBrowser = async (browser) => {
     const page = (await browser.pages())[0];
@@ -13,14 +14,7 @@ export const initBrowser = async (browser) => {
     const url = await setCookies(page);
     doLog();
     doLog('## Open Web Site');
-    try {
-        await page.goto(url);
-    } catch (error) {
-        doLog(`Error navigating to ${url}`, 'error');
-        doLog(error.message, 'error');
-        process.exit(1);
-    }
-    await screenshot(page, 'initBrowser');
+    await navigateToUrl(page, url);
     // Check if session is ok
     const loginArea = await page.$('#inputLoginname');
     if (loginArea) {
@@ -28,7 +22,7 @@ export const initBrowser = async (browser) => {
         cleanDirectory('cookies');
         const cookies = await page.cookies();
         await page.deleteCookie(...cookies);
-        await page.goto(process.env.website);
+        await navigateToUrl(page, process.env.website);
     }
     if (!checkPreviousSession()) {
         await cookieBar(page);
@@ -41,4 +35,3 @@ export const initBrowser = async (browser) => {
     await saveCookies(page);
     return page;
 };
-
