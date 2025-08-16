@@ -52,12 +52,13 @@ const main = async () => {
                 await waitTime(secondsToReload);
                 break;
             case STATUS.PURCHASED:
-                doLog('Player purchased!');
+                doLog('!!! PLAYER PURCHASED !!!');
                 restart = false;
                 break;
         }
     }
     doLog('The end!');
+    process.exit(1);
 };
 
 await main();

@@ -3,7 +3,8 @@ import {screenshot} from "../utils/screenshotUtils.js";
 
 export const navigateToUrl = async (page, url, options = {waitUntil: 'domcontentloaded'}) => {
     let counter = 0;
-    while (counter++ <= 3) {
+    while (counter < 3) {
+        counter = counter + 1;
         try {
             const response = await page.goto(url, options);
             await screenshot(page, 'navigateToUrl');
