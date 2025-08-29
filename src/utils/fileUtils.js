@@ -7,14 +7,24 @@ export const cleanDirectory = (directory) => {
 }
 
 export const checkConfig = (jsonString) => {
-    const config = JSON.parse(jsonString);
-    const requiredProps = ["auctionPercent", "age", "skills", "price"];
-    for (let prop of requiredProps) {
-        if (!(prop in config)) {
-            return false;
-        }
-    }
-    return true;
+	let config;
+	try {
+		config = JSON.parse(jsonString);
+	} catch {
+		return false;
+	}
+	const requiredProps = ["auctionPercent", "age", "skills", "price"];
+	const hasRequiredProps = (obj) =>
+		requiredProps.every((prop) => Object.prototype.hasOwnProperty.call(obj, prop));
+	if (Array.isArray(config)) {
+		return config.length > 0 && config.every(
+			(item) => item && typeof item === "object" && hasRequiredProps(item)
+		);
+	}
+	if (config && typeof config === "object") {
+		return hasRequiredProps(config);
+	}
+	return false;
 }
 
 export const registerTransferNumber = (number) => {

@@ -71,6 +71,20 @@ export const searchNewPlayer = async (browser, page, config) => {
         await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill'+(i+1)+'Max', skill.max.toString());
         await waitRandomTime();
     }
+    doLog(`  - Select minimum price: ${config.price.minPrice.toString()}`);
+    await page.$eval(
+        '#ctl00_ctl00_CPContent_CPMain_txtTransferCompareAvgMin',
+        (el, config) => el.value = config.price.minPrice.toString(),
+        config
+    );
+    doLog(`  - Select maximum price: ${config.price.maxPrice.toString()}`);
+    await waitRandomTime();
+    await page.$eval(
+        '#ctl00_ctl00_CPContent_CPMain_txtTransferCompareAvgMax',
+        (el, config) => el.value = config.price.maxPrice.toString(),
+        config
+    );
+    await waitRandomTime();
     const abilities = config.abilities;
     if (abilities) {
         for (var i=0; i < abilities.length; i++) {
@@ -124,10 +138,13 @@ export const filteringPlayers = (players, filters) => {
     const honesty = ['onesta', 'retta'];
     let filteredPlayers = players.filter((player) => {
         if (player.median === '') return false;
+        let now = new Date();
+        now.setMinutes(now.getMinutes() + 3);
         return player.price > minPrice
             && player.price < maxPrice
             && player.price < (player.median * (parseInt(filters.auctionPercent) / 100))
-            && honesty.includes(player.honesty);
+            && honesty.includes(player.honesty)
+            && player.date.getTime() < now.getTime();
     });
     const numberPlayers = players.length;
     const numberFilteredPlayers = filteredPlayers.length;
@@ -171,7 +188,9 @@ export const statsPlayers = (players) => {
 export const fromTransferListToTextualLevel = (number) => {
     let transferPlayersLevel = '';
     if (!number || isNaN(number)) transferPlayersLevel = "NAN";
-    if (number < 50000) transferPlayersLevel = "Very low moment";
+    transferPlayersLevel = "Very low moment";
+    if (number > 60000) transferPlayersLevel = "Normal time, difficult to find someone";
+    if (number > 70000) transferPlayersLevel = "Time for capital gain";
     if (number > 80000) transferPlayersLevel = "Off-Season Time: it's good time!";
     if (number > 90000) transferPlayersLevel = "Off-Season Time: it's a very good time!";
     if (number > 100000)  transferPlayersLevel = "Off-Season Time: it's an extraordinary moment!";

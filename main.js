@@ -1,8 +1,9 @@
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import {checkConfig, cleanDirectory} from './src/utils/fileUtils.js';
 import {initBrowser} from './src/browser/initBrowser.js';
 import {findAuctionInProgress, checkRelaunchProposal} from './src/player/auctionUtils.js';
-import {searchNewPlayer} from './src/player/playerSearch.js';
+import {filteringPlayers, searchNewPlayer} from './src/player/playerSearch.js';
 import {doLog} from './src/utils/logUtils.js';
 import {waitTime} from "./src/utils/timeUtils.js";
 import {STATUS} from "./src/browser/setConfiguration.js";
@@ -21,14 +22,27 @@ const main = async () => {
     let player = null;
     let playerLost = true;
     while (restart) {
-        const browser = await puppeteer.launch({ headless: true });
+        puppeteer.use(StealthPlugin());
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--start-maximized'],
+            defaultViewport: null
+        });
         const page = await initBrowser(browser);
         const followedPlayer = await findAuctionInProgress(browser, page);
         if (followedPlayer && !playerLost) {
             player = followedPlayer;
         }
         if (!player) {
-            player = await searchNewPlayer(browser, page, configJson);
+            let result = [];
+            for (const itemConfig of configJson) {
+                player = await searchNewPlayer(browser, page, itemConfig);
+                if (player) {
+                    player.printPlayer();
+                    result.push(player);
+                }
+            }
+            player = filteringPlayers(result, configJson[0]);
         }
         if (!player) {
             doLog('- No player found!');

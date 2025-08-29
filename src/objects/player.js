@@ -41,10 +41,7 @@ export class Player {
     }
 
     shortPrint() {
-        doLog()
-        doLog('  - Name:           ' + this.name);
-        doLog('  - ID:             ' + this.id);
-        doLog('  - Age:            ' + this.age);
+        doLog(`  - ${this.id} ${this.name} (${this.age})`);
     }
 
     auctionPrint() {

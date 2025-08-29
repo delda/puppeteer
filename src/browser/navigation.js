@@ -1,5 +1,6 @@
 import {doLog} from '../utils/logUtils.js';
 import {screenshot} from "../utils/screenshotUtils.js";
+import {waitRandomTime} from "../utils/timeUtils.js";
 
 export const navigateToUrl = async (page, url, options = {waitUntil: 'domcontentloaded'}) => {
     let counter = 0;
@@ -24,4 +25,5 @@ export const navigateToUrl = async (page, url, options = {waitUntil: 'domcontent
             process.exit(1);
         }
     }
+    await waitRandomTime();
 };

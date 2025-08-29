@@ -10,8 +10,8 @@ import {navigateToUrl} from "../browser/navigation.js";
 export const playerValues = async (browser, url) => {
     const tabNew = await browser.newPage();
     await setConfiguration(tabNew);
-    doLog();
-    doLog('## Player page');
+    // doLog();
+    // doLog('## Player page');
     await navigateToUrl(tabNew, url);
     await screenshot(tabNew, 'player');
     // Name
@@ -51,8 +51,6 @@ export const playerValues = async (browser, url) => {
     // Stamina
     const playerStaminaSpan = await tabNew.$('#ctl00_ctl00_CPContent_CPMain_ucPlayerSkills_trStamina > td > div > div.bar-level > span.bar-denomination');
     const stamina = await tabNew.evaluate(element => element.innerHTML, playerStaminaSpan);
-    // const prova = await tabNew.content();
-    // console.log(prova);
     // Keeper
     const playerKeeperSpan = await tabNew.$('#ctl00_ctl00_CPContent_CPMain_ucPlayerSkills_trKeeper span.bar-denomination');
     const keeper = await tabNew.evaluate(element => element.innerHTML, playerKeeperSpan);
@@ -78,8 +76,7 @@ export const playerValues = async (browser, url) => {
     const playerCompareLink = await tabNew.$$('div#ctl00_ctl00_CPContent_CPSidebar_pnlRight > div.box.sidebarBox > div.boxBody > a');
     await waitRandomTime();
     await playerCompareLink[1].click();
-    doLog();
-    doLog('## Transfer compare');
+    // doLog('## Transfer compare');
     await tabNew.waitForNavigation();
     await screenshot(tabNew, 'transfer_compare');
     let playerAverageDiv;
