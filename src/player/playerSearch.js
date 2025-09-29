@@ -144,7 +144,7 @@ export const filteringPlayers = (players, filters) => {
             && player.price < maxPrice
             && player.price < (player.median * (parseInt(filters.auctionPercent) / 100))
             && honesty.includes(player.honesty)
-            && player.date.getTime() < now.getTime();
+            && player.date.getTime() > now.getTime();
     });
     const numberPlayers = players.length;
     const numberFilteredPlayers = filteredPlayers.length;
@@ -188,7 +188,8 @@ export const statsPlayers = (players) => {
 export const fromTransferListToTextualLevel = (number) => {
     let transferPlayersLevel = '';
     if (!number || isNaN(number)) transferPlayersLevel = "NAN";
-    transferPlayersLevel = "Very low moment";
+    transferPlayersLevel = "Start Season Time: it's time to sell!";
+    if (number > 50000) transferPlayersLevel = "Very low moment";
     if (number > 60000) transferPlayersLevel = "Normal time, difficult to find someone";
     if (number > 70000) transferPlayersLevel = "Time for capital gain";
     if (number > 80000) transferPlayersLevel = "Off-Season Time: it's good time!";
