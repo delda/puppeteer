@@ -33,22 +33,22 @@ const main = async () => {
         if (followedPlayer && !playerLost) {
             player = followedPlayer;
         }
+        let itemConfig = {};
         if (!player) {
             let result = [];
-            for (const itemConfig of configJson) {
+            for (itemConfig of configJson) {
                 player = await searchNewPlayer(browser, page, itemConfig);
                 if (player) {
-                    player.printPlayer();
                     result.push(player);
                 }
             }
-            player = filteringPlayers(result, configJson[0]);
+            player = filteringPlayers(result, itemConfig);
         }
         if (!player) {
             doLog('- No player found!');
             return;
         }
-        const status = await checkRelaunchProposal(browser, player, configJson);
+        const status = await checkRelaunchProposal(browser, player, itemConfig);
         doLog();
         switch (status) {
             case STATUS.LOST:

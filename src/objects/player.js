@@ -40,11 +40,18 @@ export class Player {
         this.kicker = kicker;
     }
 
-    shortPrint() {
+    inlinePrint() {
         const honesty = ['onesta', 'retta'];
         const isHonest = honesty.includes(this.honesty)
         const median = (this.median === '' ? '---' : this.median.toPrintablePrice())
-        doLog(`  - ${this.id} ${this.name.padEnd(20, ' ').substring(0, 20)} ${this.age.padEnd(6, ' ').substring(0, 6)} ${parseInt(this.price).toPrintablePrice().padStart(10, ' ')} ${median.padStart(10, ' ')} ` + (isHonest ? 'O' : ''));
+        doLog(`  - ${this.id} ${this.name.padEnd(20, ' ').substring(0, 20)} ${this.age.padEnd(6, ' ').substring(0, 6)} ${this.date.toLocaleString("it-IT", {timeZone: "Europe/Rome"}).toString()} ${parseInt(this.price).toPrintablePrice().padStart(10, ' ')} ${median.padStart(10, ' ')} ` + (isHonest ? 'O' : ''));
+    }
+
+    shortPrint() {
+        doLog()
+        doLog('  - Name:           ' + this.name);
+        doLog('  - ID:             ' + this.id);
+        doLog('  - Age:            ' + this.age);
     }
 
     auctionPrint() {

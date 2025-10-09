@@ -116,7 +116,7 @@ export const searchNewPlayer = async (browser, page, config) => {
     for (const playerHref of playersHref) {
         await waitRandomTime();
         const player = await playerValues(browser, playerHref);
-        player.shortPrint();
+        player.inlinePrint();
         result.push(player);
     }
     const stats = statsPlayers(result);
