@@ -34,3 +34,8 @@ export const setCookies = async (page) => {
     url = fs.readFileSync(FILE_HOST, 'utf-8');
     return JSON.parse(url);
 }
+
+export const checkIsInSession = async (page) => {
+    doLog('* Check session');
+    return await page.$('a#myClubLink');
+}

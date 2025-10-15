@@ -1,14 +1,20 @@
-import { doLog } from '../utils/logUtils.js';
-import { screenshot } from '../utils/screenshotUtils.js';
-import { cookieBar } from "./cookieBar.js";
+import {doLog} from '../utils/logUtils.js';
+import {screenshot} from '../utils/screenshotUtils.js';
+import {cookieBar} from "./cookieBar.js";
 import 'dotenv/config';
-import { waitRandomTime } from "../utils/timeUtils.js";
+import {waitRandomTime} from "../utils/timeUtils.js";
 
 export const loginPage = async (page) => {
-    doLog('  - Click on login page');
-    await screenshot(page, 'start');
-    await waitRandomTime();
-    await page.click('.extra-message > a');
+    const registerArea = await page.$('#inputEmail');
+    await screenshot(page, 'prima');
+    if (registerArea) {
+        doLog('  - Registration area detected');
+        await page.$$eval('a', (links) => {
+            const link = links.find(a => a.textContent.trim().includes('Accedi'));
+            if (link) link.click();
+        });
+    }
+    await screenshot(page, 'login_page');
     doLog();
     doLog('## Login page');
     let username = process.env.username;

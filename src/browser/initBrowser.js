@@ -4,7 +4,7 @@ import { loginPage } from './login.js';
 import 'dotenv/config';
 import { doLog } from '../utils/logUtils.js';
 import { screenshot } from '../utils/screenshotUtils.js';
-import {checkPreviousSession, saveCookies, setCookies} from "../utils/session.js";
+import {checkPreviousSession, saveCookies, setCookies, checkIsInSession} from "../utils/session.js";
 import {cleanDirectory} from "../utils/fileUtils.js";
 import {navigateToUrl} from "./navigation.js";
 
@@ -15,16 +15,13 @@ export const initBrowser = async (browser) => {
     doLog();
     doLog('## Open Web Site');
     await navigateToUrl(page, url);
-    // Check if session is ok
-    const loginArea = await page.$('#inputLoginname');
-    if (loginArea) {
-        doLog('  - Session not valid: reset of session!');
+    const isInSession = await checkIsInSession(page);
+    if (!isInSession) {
+        doLog('  - Not in session: cleaning old datas');
         cleanDirectory('cookies');
         const cookies = await page.cookies();
         await page.deleteCookie(...cookies);
         await navigateToUrl(page, process.env.website);
-    }
-    if (!checkPreviousSession()) {
         await cookieBar(page);
         await loginPage(page);
         await page.waitForNavigation();

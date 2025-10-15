@@ -46,6 +46,13 @@ export const searchNewPlayer = async (browser, page, config) => {
     await clearLink.click();
     await screenshot(page, 'search_clean');
     await waitRandomTime();
+    doLog('  - Show advanced search options');
+    const chkShowAdvanced = await page.$('#ctl00_ctl00_CPContent_CPMain_chkShowAdvanced');
+    const isAdvancedChecked = await chkShowAdvanced.evaluate(el => el.checked);
+    if (!isAdvancedChecked) {
+        await chkShowAdvanced.click();
+    }
+    await waitRandomTime();
     doLog('  - Select min age: '+config.age.min);
     const minAgeIntegerPart = Math.trunc(config.age.min);
     const minAgeDecimalPart = Math.ceil((config.age.min - minAgeIntegerPart) * 100);
@@ -189,8 +196,8 @@ export const fromTransferListToTextualLevel = (number) => {
     let transferPlayersLevel = '';
     if (!number || isNaN(number)) transferPlayersLevel = "NAN";
     transferPlayersLevel = "Start Season Time: it's time to sell!";
-    if (number > 50000) transferPlayersLevel = "Very low moment";
-    if (number > 60000) transferPlayersLevel = "Normal time, difficult to find someone";
+    if (number > 50000) transferPlayersLevel = "Very low moment, difficult to find someone";
+    if (number > 60000) transferPlayersLevel = "Normal time, maybe you can find someone";
     if (number > 70000) transferPlayersLevel = "Time for capital gain";
     if (number > 80000) transferPlayersLevel = "Off-Season Time: it's good time!";
     if (number > 90000) transferPlayersLevel = "Off-Season Time: it's a very good time!";
