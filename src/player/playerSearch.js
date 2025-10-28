@@ -3,7 +3,7 @@ import {doLog} from '../utils/logUtils.js';
 import {playerValues} from './playerDetails.js';
 import {cookieBar} from "../browser/cookieBar.js";
 import {waitRandomTime} from "../utils/timeUtils.js";
-import {registerTransferNumber} from "../utils/fileUtils.js";
+import {registerTransferNumber} from "../utils/statistics.js";
 import {SKILL_DROP_DOWN, SKILL_TABLE, ABILITIES} from "../utils/constants.js";
 
 export const searchNewPlayer = async (browser, page, config) => {
@@ -23,23 +23,6 @@ export const searchNewPlayer = async (browser, page, config) => {
     doLog('## Search page');
     await page.waitForNavigation();
     await screenshot(page, 'search_page');
-
-    const transferPlayersNumber = await page.evaluate(() => {
-        const nodoTesto = document.evaluate(
-            "//td[contains(., 'Giocatori in lista di trasferimento')]",
-            document,
-            null,
-            XPathResult.FIRST_ORDERED_NODE_TYPE,
-            null
-        ).singleNodeValue;
-        if (!nodoTesto) return null;
-        const nextTd = nodoTesto.nextElementSibling;
-        const regex = /\s+/;
-        return nextTd ? parseInt(nextTd.textContent.trim().replace(regex, '')) : null;
-    });
-    const transferPlayersLevel = fromTransferListToTextualLevel(transferPlayersNumber);
-    doLog('  - Register number of player in transfer list: ' + transferPlayersNumber + ' (' + transferPlayersLevel + ')');
-    registerTransferNumber(transferPlayersNumber);
 
     doLog('  - Clean previous selection');
     const clearLink = await page.$('#ctl00_ctl00_CPContent_CPMain_butClear');
@@ -120,6 +103,7 @@ export const searchNewPlayer = async (browser, page, config) => {
         playersHandle.map(handle => handle.jsonValue())
     );
     let result = [];
+    doLog(`    ${'ID'.padEnd(9, ' ')} ${'Name'.padEnd(20, ' ')} ${'Age'.padEnd(6, ' ')} ${'Time'.padEnd(20, ' ')} ${'Price'.padEnd(10, ' ')} ${'Max Price'.padEnd(10, ' ')} Honesty`);
     for (const playerHref of playersHref) {
         await waitRandomTime();
         const player = await playerValues(browser, playerHref);

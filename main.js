@@ -21,6 +21,7 @@ const main = async () => {
     let restart = true;
     let player = null;
     let playerLost = true;
+    let itemConfig = {};
     while (restart) {
         puppeteer.use(StealthPlugin());
         const browser = await puppeteer.launch({
@@ -33,7 +34,6 @@ const main = async () => {
         if (followedPlayer && !playerLost) {
             player = followedPlayer;
         }
-        let itemConfig = {};
         if (!player) {
             let result = [];
             for (itemConfig of configJson) {
@@ -42,7 +42,9 @@ const main = async () => {
                     result.push(player);
                 }
             }
-            player = filteringPlayers(result, itemConfig);
+            if (result.length > 1) {
+                player = filteringPlayers(result, itemConfig);
+            }
         }
         if (!player) {
             doLog('- No player found!');

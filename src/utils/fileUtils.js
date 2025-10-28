@@ -27,7 +27,7 @@ export const checkConfig = (jsonString) => {
 	return false;
 }
 
-export const registerTransferNumber = (number) => {
+export const registerTransferNumber = (number, week, season) => {
     const filePath = join(process.cwd(), 'transferNumber.json');
     let data = [];
     if (fs.existsSync(filePath)) {
