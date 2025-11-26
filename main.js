@@ -42,7 +42,7 @@ const main = async () => {
                     result.push(player);
                 }
             }
-            if (result.length > 1) {
+            if (result.length > 0) {
                 player = filteringPlayers(result, itemConfig);
             }
         }
