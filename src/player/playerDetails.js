@@ -51,6 +51,9 @@ export const playerValues = async (browser, url) => {
     // Stamina
     const playerStaminaSpan = await tabNew.$('#ctl00_ctl00_CPContent_CPMain_ucPlayerSkills_trStamina > td > div > div.bar-level > span.bar-denomination');
     const stamina = await tabNew.evaluate(element => element.innerHTML, playerStaminaSpan);
+    // Speciality
+    const playerSpecialitySpan = await tabNew.$('#ctl00_ctl00_CPContent_CPMain_ucPlayerSkills_trSpeciality > td:nth-child(2)');
+    const speciality = await tabNew.evaluate(element => element.innerText.trim(), playerSpecialitySpan);
     // Keeper
     const playerKeeperSpan = await tabNew.$('#ctl00_ctl00_CPContent_CPMain_ucPlayerSkills_trKeeper span.bar-denomination');
     const keeper = await tabNew.evaluate(element => element.innerHTML, playerKeeperSpan);
@@ -102,7 +105,7 @@ export const playerValues = async (browser, url) => {
 
     const player = new Player(name, playerId, age);
     player.setAuction(baseDate, price, average, median);
-    player.setCharacter(gentleness, aggressiveness, honesty, form, stamina);
+    player.setCharacter(gentleness, aggressiveness, honesty, form, stamina, speciality);
     player.setSkills(keeper, defender, playmaker, winger, passer, scorer, kicker);
     return player;
 }

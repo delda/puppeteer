@@ -5,13 +5,13 @@ import {cookieBar} from "../browser/cookieBar.js";
 import {waitRandomTime} from "../utils/timeUtils.js";
 import {registerTransferNumber} from "../utils/statistics.js";
 import {SKILL_DROP_DOWN, SKILL_TABLE, ABILITIES} from "../utils/constants.js";
+import {Player} from "../objects/player.js";
 
 export const searchNewPlayer = async (browser, page, config) => {
     doLog('  - Click on transfer page');
     const transferButton = await page.$('.scTransfer');
     await cookieBar(page);
     await waitRandomTime();
-
     // Search page
     await screenshot(page, 'transfer_button');
     if (!transferButton) {
@@ -23,7 +23,6 @@ export const searchNewPlayer = async (browser, page, config) => {
     doLog('## Search page');
     await page.waitForNavigation();
     await screenshot(page, 'search_page');
-
     doLog('  - Clean previous selection');
     const clearLink = await page.$('#ctl00_ctl00_CPContent_CPMain_butClear');
     await clearLink.click();
@@ -90,7 +89,6 @@ export const searchNewPlayer = async (browser, page, config) => {
     const searchButton = await page.$('#ctl00_ctl00_CPContent_CPMain_butSearch');
     await waitRandomTime();
     await searchButton.click();
-
     doLog();
     doLog('## Search page results');
     await page.waitForNavigation();
@@ -103,7 +101,7 @@ export const searchNewPlayer = async (browser, page, config) => {
         playersHandle.map(handle => handle.jsonValue())
     );
     let result = [];
-    doLog(`    ${'ID'.padEnd(9, ' ')} ${'Name'.padEnd(20, ' ')} ${'Age'.padEnd(6, ' ')} ${'Time'.padEnd(20, ' ')} ${'Price'.padEnd(10, ' ')} ${'Max Price'.padEnd(10, ' ')} Honesty`);
+    Player.inlineHeadPrint();
     for (const playerHref of playersHref) {
         await waitRandomTime();
         const player = await playerValues(browser, playerHref);

@@ -5,7 +5,8 @@ import {
     GENTLENESS_TABLE,
     HONESTY_TABLE,
     SKILL_TABLE,
-    STAMINA_TABLE
+    STAMINA_TABLE,
+    ABILITIES
 } from "../utils/constants.js";
 
 export class Player {
@@ -22,12 +23,25 @@ export class Player {
         this.median = median;
     }
 
-    setCharacter(gentleness, aggressiveness, honesty, form, stamina) {
+    formatDate() {
+        return this.date.toLocaleString("it-IT", {
+            timeZone: "Europe/Rome",
+            day: '2-digit',
+            month: '2-digit',
+            year: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        }).replace(',', '');
+    }
+
+    setCharacter(gentleness, aggressiveness, honesty, form, stamina, speciality) {
         this.gentleness = gentleness;
         this.aggressiveness = aggressiveness;
         this.honesty = honesty;
         this.form = form;
         this.stamina = stamina;
+        this.speciality = speciality;
     }
 
     setSkills(keeper, defender, playmaker, winger, passer, scorer, kicker) {
@@ -40,11 +54,16 @@ export class Player {
         this.kicker = kicker;
     }
 
+    static inlineHeadPrint() {
+        doLog(`    ${'ID'.padEnd(9, ' ')} ${'Name'.padEnd(20, ' ')} ${'Age'.padEnd(6, ' ')} ${'Time'.padEnd(14, ' ')} ${'Price'.padEnd(10, ' ')} ${'Max Price'.padEnd(10, ' ')} Honesty Spec`);
+    }
+
     inlinePrint() {
         const honesty = ['onesta', 'retta'];
-        const isHonest = honesty.includes(this.honesty)
+        const isHonest = honesty.includes(this.honesty) ? '==YES==' : '';
         const median = (this.median === '' ? '---' : this.median.toPrintablePrice())
-        doLog(`  - ${this.id} ${this.name.padEnd(20, ' ').substring(0, 20)} ${this.age.padEnd(6, ' ').substring(0, 6)} ${this.date.toLocaleString("it-IT", {timeZone: "Europe/Rome"}).toString()} ${parseInt(this.price).toPrintablePrice().padStart(10, ' ')} ${median.padStart(10, ' ')} ` + (isHonest ? 'O' : ''));
+        const speciality = this.specialityEmoji(this.speciality);
+        doLog(`  - ${this.id} ${this.name.padEnd(20, ' ').substring(0, 20)} ${this.age.padEnd(6, ' ').substring(0, 6)} ${this.formatDate()} ${parseInt(this.price).toPrintablePrice().padStart(10, ' ')} ${median.padStart(10, ' ')} ${isHonest.padEnd(7, ' ')}  ${speciality}`);
     }
 
     shortPrint() {
@@ -55,7 +74,7 @@ export class Player {
     }
 
     auctionPrint() {
-        doLog('  - Date:           ' + this.date.toLocaleString("it-IT", {timeZone: "Europe/Rome"}).toString());
+        doLog('  - Date:           ' + this.formatDate());
         doLog('  - Price:          ' + this.price.toPrintablePrice());
         doLog('  - Median:         ' + (this.median === '' ? '---' : this.median.toPrintablePrice()));
         doLog('  - Average:        ' + (this.average === '' ? '---' : this.average.toPrintablePrice()));
@@ -96,5 +115,29 @@ export class Player {
         this.auctionPrint();
         this.characterPrint();
         this.skillPrint();
+    }
+
+    specialityEmoji(speciality) {
+        let emoji = '';
+        if (ABILITIES.includes(speciality)) {
+            switch(speciality) {
+                case 'Tecnico':
+                    emoji = '⚙';
+                    break;
+                case 'Veloce':
+                    emoji = '⚡';
+                    break;
+                case 'Potente':
+                    emoji = '💪';
+                    break;
+                case 'Imprevedibile':
+                    emoji = '🎲';
+                    break;
+                case 'Colpo di testa':
+                    emoji = '🧠';
+                    break;
+            }
+        }
+        return emoji;
     }
 }
