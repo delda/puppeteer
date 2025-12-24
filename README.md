@@ -53,3 +53,13 @@ Edit the `config.json` file to adjust the player search and auction parameters:
 ```
 
 Enjoy!
+
+## Plot average transfer numbers
+
+After collecting transfer data, compute and visualize the daily average with starting a local web server:
+
+```bash
+cd transfer
+python3 -m http.server 8000
+```
+Than, run the URL http://localhost:8000/transfer_graph.html
