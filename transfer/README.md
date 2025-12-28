@@ -1,49 +1,62 @@
-# Hattrick Transfer Chart
+# Transfer Chart
 
-Questo progetto visualizza il grafico dei trasferimenti di Hattrick utilizzando Google Firebase Hosting.
+This project visualizes the transfer chart using Google Firebase Hosting.
 
-## Prerequisiti
+## Prerequisites
 
-È necessario avere installato [Node.js](https://nodejs.org/) (versione recente) e la CLI di Firebase.
+You need to have [Node.js](https://nodejs.org/) (recent version) and the Firebase CLI installed.
 
-Se non hai ancora installato la CLI di Firebase:
+If you haven't installed the Firebase CLI yet:
 
 ```bash
 npm install -g firebase-tools
 ```
 
-Effettua il login:
+Log in:
 
 ```bash
 firebase login
 ```
 
-## Prima Installazione / Deploy
+## First Installation / Deploy
 
-1. Offusca il file dei dati:
+1. Obfuscate the data file:
    ```bash
    node obfuscate.js
    ```
-   Questo comando crea `transferNumber.dat` da `transferNumber.json`.
+   This command creates `transferNumber.dat` from `transferNumber.json`.
 
-2. Minifica il file JavaScript:
+2. Minify the JavaScript file:
    ```bash
-   npx uglify-es transfer_graph.js -o transfer_graph.min.js -c -m
+   npx uglify-es transfer/transfer_graph.js -o transfer/transfer_graph.min.js -c -m
    ```
-   Questo comando crea una versione compatta e difficile da leggere del codice (`transfer_graph.min.js`).
+   This command creates a compact and hard-to-read version of the code (`transfer_graph.min.js`).
 
-3. Pubblica su Firebase:
+3. Publish to Firebase:
    ```bash
+   cd transfer
    firebase deploy
    ```
 
-Il grafico sarà visibile a: https://hattrick-50b4e.web.app/transfer_graph.html
+The chart will be visible at Hosting URL indicated.
 
-## Aggiornare i dati
+## Updating Data
 
-Quando hai un nuovo `transferNumber.json`, ripeti i passi di offuscamento e deploy:
+When you have a new `transferNumber.json`, repeat the obfuscation and deploy steps:
 
+`cd transfer`
 1. `node obfuscate.js`
-2. `firebase deploy --only hosting`
+2. `npx uglify-es transfer_graph.js -o transfer_graph.min.js -c -m`
+3. `firebase deploy --only hosting`
 
-Se modifichi il codice JavaScript (`transfer_graph.js`), ricordati di rieseguire anche il comando di minificazione prima del deploy.
+If you modify the JavaScript code (`transfer_graph.js`), remember to re-run the minification command before deploying.
+
+## Development
+
+To develop the graph, you can use the Firebase development server:
+
+```bash
+firebase serve
+```
+
+This command starts a local server and the graph will be visible at: http://localhost:5000/transfer_graph.html

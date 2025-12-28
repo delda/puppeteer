@@ -68,14 +68,14 @@ fetch('transferNumber.dat')
             mode: 'lines+markers',
             name: 'all'
         };
-        const seasonTrace = { x: seasonData.x, y: seasonData.y, type: 'bar', name: 'Stagione', marker: { color: '#3ab7e0' } };
-        const weekTrace = { x: weekData.x, y: weekData.y, type: 'bar', name: 'Settimana', marker: { color: '#3a74e0' } };
-        const dayTrace = { x: dayData.x, y: dayData.y, type: 'bar', name: 'Giorno', marker: { color: '#043288' } };
+        const seasonTrace = { x: seasonData.x, y: seasonData.y, type: 'bar', name: 'Stagione', marker: { color: '#3ab7e0' }, visible: false };
+        const weekTrace = { x: weekData.x, y: weekData.y, type: 'bar', name: 'Settimana', marker: { color: '#3a74e0' }, visible: false };
+        const dayTrace = { x: dayData.x, y: dayData.y, type: 'bar', name: 'Giorno', marker: { color: '#043288' }, visible: false };
         // Layout with buttons to switch grouping and raw data view
         const layout = {
-            title: 'Numero di trasferimenti in Hattrick',
+            title: 'Tutti i trasferimenti registrati',
             xaxis: { title: 'Data', type: 'date' },
-            yaxis: { title: 'Media trasferimenti' },
+            yaxis: { title: 'Numero trasferimenti' },
             updatemenus: [{
                 x: 0.1,
                 y: 1.1,
