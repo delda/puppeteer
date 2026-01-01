@@ -76,9 +76,14 @@ fetch('transferNumber.dat')
             return seasonColorMap[s];
         });
         const seasonColors = seasonOrder.map(s => seasonColorMap[s]);
+
+        const dayToSeason = {};
+        data.forEach(d => { dayToSeason[d.day] = d.jsonSeason; });
+        const dayColors = dayOrder.map(d => seasonColorMap[dayToSeason[d]]);
+
         const seasonTrace = { x: seasonData.x, y: seasonData.y, type: 'bar', name: 'Stagione', marker: { color: seasonColors }, visible: false };
         const weekTrace = { x: weekData.x, y: weekData.y, type: 'bar', name: 'Settimana', marker: { color: weekColors }, visible: false };
-        const dayTrace = { x: dayData.x, y: dayData.y, type: 'bar', name: 'Giorno', marker: { color: '#043288' }, visible: false };
+        const dayTrace = { x: dayData.x, y: dayData.y, type: 'bar', name: 'Giorno', marker: { color: dayColors }, visible: false };
         // Layout with buttons to switch grouping and raw data view
         const layout = {
             title: 'Tutti i trasferimenti registrati',
