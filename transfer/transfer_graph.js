@@ -1,6 +1,3 @@
-// Locally, use python to start a simple web server
-// python3 -m http.server 8000
-// http://localhost:8000/transfer_graph.html
 fetch('transferNumber.dat')
     .then(response => response.text())
     .then(encodedData => {
@@ -17,10 +14,6 @@ fetch('transferNumber.dat')
             d.jsonSeason = jsonSeason;
             // Season grouping
             const m = d.date.getMonth();
-            if (m >= 2 && m <= 4) d.season = 'Spring';
-            else if (m >= 5 && m <= 7) d.season = 'Summer';
-            else if (m >= 8 && m <= 10) d.season = 'Autumn';
-            else d.season = 'Winter';
             // Week-season grouping key from JSON fields
             d['week-season'] = `${jsonWeek}-${jsonSeason}`;
             // Day grouping (group by calendar date)
@@ -68,8 +61,23 @@ fetch('transferNumber.dat')
             mode: 'lines+markers',
             name: 'all'
         };
-        const seasonTrace = { x: seasonData.x, y: seasonData.y, type: 'bar', name: 'Stagione', marker: { color: '#3ab7e0' }, visible: false };
-        const weekTrace = { x: weekData.x, y: weekData.y, type: 'bar', name: 'Settimana', marker: { color: '#3a74e0' }, visible: false };
+
+        // Generate consistent colors for seasons
+        const palette = [
+            '#ADD8E6', '#9AC0DE', '#87A9D6', '#7591CE', '#627AC6',
+            '#4F62BE', '#3C4BB6', '#2933AE', '#1F77B4'
+        ];
+        const seasonColorMap = {};
+        seasonOrder.forEach((s, i) => {
+            seasonColorMap[s] = palette[i % palette.length];
+        });
+        const weekColors = weekOrder.map(key => {
+            const [, s] = key.split('-');
+            return seasonColorMap[s];
+        });
+        const seasonColors = seasonOrder.map(s => seasonColorMap[s]);
+        const seasonTrace = { x: seasonData.x, y: seasonData.y, type: 'bar', name: 'Stagione', marker: { color: seasonColors }, visible: false };
+        const weekTrace = { x: weekData.x, y: weekData.y, type: 'bar', name: 'Settimana', marker: { color: weekColors }, visible: false };
         const dayTrace = { x: dayData.x, y: dayData.y, type: 'bar', name: 'Giorno', marker: { color: '#043288' }, visible: false };
         // Layout with buttons to switch grouping and raw data view
         const layout = {

@@ -28,7 +28,7 @@ firebase login
 
 2. Minify the JavaScript file:
    ```bash
-   npx uglify-es transfer/transfer_graph.js -o transfer/transfer_graph.min.js -c -m
+   npx uglify-es transfer_graph.js -o transfer_graph.min.js -c -m
    ```
    This command creates a compact and hard-to-read version of the code (`transfer_graph.min.js`).
 
