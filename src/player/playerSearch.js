@@ -57,7 +57,7 @@ export const searchNewPlayer = async (browser, page, config) => {
         await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill'+(i+1)+'Min', skill.min.toString());
         await waitRandomTime();
         doLog('  - Select level to \'' + SKILL_TABLE[skill.max] + '\' (' + skill.max.toString() + ')');
-        await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill'+(i+1)+'Max', skill.max.toString());
+        await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill' + (i + 1) + 'Max', skill.max.toString());
         await waitRandomTime();
     }
     doLog(`  - Select minimum price: ${config.price.minPrice.toString()}`);
@@ -129,11 +129,12 @@ export const filteringPlayers = (players, filters) => {
         if (player.median === '') return false;
         let now = new Date();
         now.setMinutes(now.getMinutes() + 3);
-        return player.price > minPrice
+        return player.median > minPrice
             && player.price < maxPrice
             && player.price < (player.median * (parseInt(filters.auctionPercent) / 100))
             && honesty.includes(player.honesty)
-            && player.date.getTime() > now.getTime();
+            && player.date.getTime() > now.getTime()
+            && player.date.getTime() < (now.getTime() + (24 * 60 * 60 * 1000));
     });
     const numberPlayers = players.length;
     const numberFilteredPlayers = filteredPlayers.length;
@@ -183,6 +184,6 @@ export const fromTransferListToTextualLevel = (number) => {
     if (number > 70000) transferPlayersLevel = "Time for capital gain";
     if (number > 80000) transferPlayersLevel = "Off-Season Time: it's good time!";
     if (number > 90000) transferPlayersLevel = "Off-Season Time: it's a very good time!";
-    if (number > 100000)  transferPlayersLevel = "Off-Season Time: it's an extraordinary moment!";
+    if (number > 100000) transferPlayersLevel = "Off-Season Time: it's an extraordinary moment!";
     return transferPlayersLevel;
 }
