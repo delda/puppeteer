@@ -1,7 +1,10 @@
 {
   "type": "module",
   "scripts": {
-    "obfuscate:graph": "node transfer/obfuscate_graph.js"
+    "coach": "node feature_coach.js",
+    "obfuscate": "node transfer/obfuscate_graph.js",
+    "purchase": "node purchase.js",
+    "transfer": "node players_in_transfer_list.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

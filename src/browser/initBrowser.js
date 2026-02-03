@@ -4,10 +4,10 @@ import { loginPage } from './login.js';
 import 'dotenv/config';
 import { doLog } from '../utils/logUtils.js';
 import { screenshot } from '../utils/screenshotUtils.js';
-import {checkPreviousSession, saveCookies, setCookies, checkIsInSession} from "../utils/session.js";
-import {cleanDirectory} from "../utils/fileUtils.js";
-import {navigateToUrl} from "./navigation.js";
-import {saveTransferInfo} from "../utils/statistics.js";
+import { checkPreviousSession, saveCookies, setCookies, checkIsInSession } from "../utils/session.js";
+import { cleanDirectory } from "../utils/fileUtils.js";
+import { navigateToUrl } from "./navigation.js";
+import { saveTransferInfo } from "../utils/statistics.js";
 
 export const initBrowser = async (browser) => {
     const page = (await browser.pages())[0];
@@ -31,6 +31,5 @@ export const initBrowser = async (browser) => {
     doLog('## Home page');
     await screenshot(page, 'home_page');
     await saveCookies(page);
-    await saveTransferInfo(page);
     return page;
 };
