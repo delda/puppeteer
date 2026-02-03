@@ -1,0 +1,17 @@
+{
+    "hosting": {
+        "public": ".",
+        "ignore": [
+            "**/.*",
+            "**/node_modules/**",
+            ".firebase",
+            ".firebaserc",
+            "firebase.json",
+            "obfuscate.js",
+            "README.md",
+            "transfer_graph.js",
+            "transferNumber_*.json",
+            "transferNumber.json"
+        ]
+    }
+}

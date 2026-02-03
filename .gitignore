@@ -5,3 +5,7 @@
 .env
 .idea/
 config.json
+transfer/transferNumber.dat
+transfer/transfer_graph.min.js
+transfer/.firebase
+transfer/.firebaserc

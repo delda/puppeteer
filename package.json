@@ -1,10 +1,16 @@
 {
   "type": "module",
+  "scripts": {
+    "obfuscate:graph": "node transfer/obfuscate_graph.js"
+  },
   "dependencies": {
     "dotenv": "^16.4.5",
     "puppeteer": "^23.5.1",
     "puppeteer-core": "^23.5.1",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2"
+  },
+  "devDependencies": {
+    "javascript-obfuscator": "^5.2.1"
   }
 }

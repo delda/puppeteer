@@ -22,9 +22,9 @@ firebase login
 
 1. Obfuscate the data file:
    ```bash
-   node obfuscate.js
+   npm run obfuscate:graph
    ```
-   This command creates `transferNumber.dat` from `transferNumber.json`.
+   This command creates `transferNumber.dat` a cripted file with all datas from `transferNumber.json`. Than, add its content to `transfer_graph.js`. Finally, cripted all the code of `transfer_graph.js`.
 
 2. Minify the JavaScript file:
    ```bash
@@ -45,9 +45,8 @@ The chart will be visible at Hosting URL indicated.
 When you have a new `transferNumber.json`, repeat the obfuscation and deploy steps:
 
 `cd transfer`
-1. `node obfuscate.js`
-2. `npx uglify-es transfer_graph.js -o transfer_graph.min.js -c -m`
-3. `firebase deploy --only hosting`
+1. `npm run obfuscate:graph`
+2. `firebase deploy --only hosting`
 
 If you modify the JavaScript code (`transfer_graph.js`), remember to re-run the minification command before deploying.
 
