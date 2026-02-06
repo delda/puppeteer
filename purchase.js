@@ -20,6 +20,7 @@ const main = async () => {
 
     let restart = true;
     let player = null;
+    let players = null;
     let playerLost = true;
     let itemConfig = {};
     while (restart) {
@@ -37,7 +38,8 @@ const main = async () => {
         if (!player) {
             let result = [];
             for (itemConfig of configJson) {
-                player = await searchNewPlayer(browser, page, itemConfig);
+                players = await searchNewPlayer(browser, page, itemConfig);
+                player = await filteringPlayers(players, config);
                 if (player) {
                     result.push(player);
                 }

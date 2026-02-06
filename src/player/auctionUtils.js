@@ -1,11 +1,11 @@
-import {doLog} from '../utils/logUtils.js';
-import {screenshot} from "../utils/screenshotUtils.js";
-import {setConfiguration, STATUS} from "../browser/setConfiguration.js";
-import {waitRandomTime, waitTime} from "../utils/timeUtils.js";
-import {playerValues} from "./playerDetails.js";
+import { doLog } from '../utils/logUtils.js';
+import { screenshot } from "../utils/screenshotUtils.js";
+import { setConfiguration, STATUS } from "../browser/setConfiguration.js";
+import { waitRandomTime, waitTime } from "../utils/timeUtils.js";
+import { playerValues } from "./playerDetails.js";
 import 'dotenv/config';
-import {parse} from "dotenv";
-import {navigateToUrl} from "../browser/navigation.js";
+import { parse } from "dotenv";
+import { navigateToUrl } from "../browser/navigation.js";
 
 export const findAuctionInProgress = async (browser, page) => {
     doLog('  - Click on auction page');
@@ -15,13 +15,15 @@ export const findAuctionInProgress = async (browser, page) => {
         return null;
     }
     await waitRandomTime();
-    await link.click();
-    await page.waitForNavigation();
+    await Promise.all([
+        link.click(),
+        page.waitForNavigation()
+    ]);
     doLog();
     doLog('## Auctions in progress');
     await screenshot(page, 'auction');
 
-    const labelsH2 = await page.$$eval('table.naked h2', elements => { return elements.map(e => e.innerHTML)})
+    const labelsH2 = await page.$$eval('table.naked h2', elements => { return elements.map(e => e.innerHTML) })
     const labelAuction = labelsH2.find(element => element.includes('Acquirente'));
     if (!labelAuction) {
         doLog('  - No auctions in progress!');
@@ -50,10 +52,13 @@ export const checkAuctionPlayer = async (page, player, config) => {
     const auctionPercent = parseInt(config.auctionPercent);
     const priceNotToBeExceeded = parseInt(player.median / 100 * auctionPercent);
     while (checkAuction) {
-	    doLog();
+        doLog();
         doLog('#### Refresh last relaunch');
         refreshDiv = await page.$('#ctl00_ctl00_CPContent_CPMain_lnkRefresh');
-        await refreshDiv.click();
+        await Promise.all([
+            refreshDiv.click(),
+            page.waitForNavigation()
+        ]);
         await screenshot(page, 'refresh');
         lastRelaunchTeamDiv = await page.$('div#ctl00_ctl00_CPContent_CPMain_pnlHighestBid > p > a');
         lastRelaunchTeam = '---';
@@ -67,7 +72,7 @@ export const checkAuctionPlayer = async (page, player, config) => {
         if (timeToEnd < 0) timeToEnd = 0;
         timeToRelaunch = timeToEnd - (60 * 2 + 10);
         activeCheckAuction = true;
-	    refreshPageTime = 0;
+        refreshPageTime = 0;
         if (timeToEnd > 60 * 60) {
             activeCheckAuction = false;
         }
@@ -76,7 +81,7 @@ export const checkAuctionPlayer = async (page, player, config) => {
         }
         if (timeToEnd < 60 * 10) {
             refreshPageTime = 60;
-        } 
+        }
         if (timeToEnd < 60 * 5) {
             refreshPageTime = 15;
         }

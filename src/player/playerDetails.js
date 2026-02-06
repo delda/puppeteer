@@ -1,11 +1,11 @@
-import {doLog} from '../utils/logUtils.js';
-import {setConfiguration} from "../browser/setConfiguration.js";
-import {screenshot} from "../utils/screenshotUtils.js";
+import { doLog } from '../utils/logUtils.js';
+import { setConfiguration } from "../browser/setConfiguration.js";
+import { screenshot } from "../utils/screenshotUtils.js";
 import "../extensions/stringExtensions.js";
 import "../extensions/numberExtensions.js";
-import {Player} from "../objects/player.js";
-import {waitRandomTime} from "../utils/timeUtils.js";
-import {navigateToUrl} from "../browser/navigation.js";
+import { Player } from "../objects/player.js";
+import { waitRandomTime } from "../utils/timeUtils.js";
+import { navigateToUrl } from "../browser/navigation.js";
 
 export const playerValues = async (browser, url) => {
     const tabNew = await browser.newPage();
@@ -27,13 +27,13 @@ export const playerValues = async (browser, url) => {
     const divAge = await tabNew.$('div.byline');
     const ageHTML = await tabNew.evaluate(element => element.innerText, divAge);
     const numbers = ageHTML.match(/[0-9]+/g);
-    const age = numbers[0]+'.'+numbers[1];
+    const age = numbers[0] + '.' + numbers[1];
     // Date
     const playerDateDiv = await tabNew.$('#ctl00_ctl00_CPContent_CPMain_updBid > div.alert > p');
     const playerDateValue = await tabNew.evaluate(element => element.innerText, playerDateDiv);
     const dateString = playerDateValue.replace('Scadenza:', '').trim();
     const baseDate = dateString.toDate();
-    const datetime = dateString.toDate().toLocaleString("it-IT", {timeZone: "Europe/Rome"});
+    const datetime = dateString.toDate().toLocaleString("it-IT", { timeZone: "Europe/Rome" });
     // Price
     const playerPriceDiv = await tabNew.$('input#ctl00_ctl00_CPContent_CPMain_txtBid');
     const playerPriceValue = await tabNew.evaluate(element => element.value, playerPriceDiv);
@@ -78,9 +78,10 @@ export const playerValues = async (browser, url) => {
     // Transfer compare
     const playerCompareLink = await tabNew.$$('div#ctl00_ctl00_CPContent_CPSidebar_pnlRight > div.box.sidebarBox > div.boxBody > a');
     await waitRandomTime();
-    await playerCompareLink[1].click();
-    // doLog('## Transfer compare');
-    await tabNew.waitForNavigation();
+    await Promise.all([
+        playerCompareLink[1].click(),
+        tabNew.waitForNavigation()
+    ]);
     await screenshot(tabNew, 'transfer_compare');
     let playerAverageDiv;
     if ((await tabNew.$('table > tbody.tablesorter-infoOnly > tr:nth-child(1) > th:nth-child(7)')) !== null) {

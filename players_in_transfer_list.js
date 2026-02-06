@@ -3,8 +3,10 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { initBrowser } from './src/browser/initBrowser.js';
 import { saveTransferInfo } from './src/utils/statistics.js';
 import { doLog } from './src/utils/logUtils.js';
+import { cleanDirectory } from "./src/utils/fileUtils.js";
 
 const main = async () => {
+    cleanDirectory('img');
     puppeteer.use(StealthPlugin());
     const browser = await puppeteer.launch({
         headless: true,

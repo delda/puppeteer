@@ -1,15 +1,21 @@
-import {screenshot} from '../utils/screenshotUtils.js';
-import {doLog} from '../utils/logUtils.js';
-import {playerValues} from './playerDetails.js';
-import {cookieBar} from "../browser/cookieBar.js";
-import {waitRandomTime} from "../utils/timeUtils.js";
-import {registerTransferNumber} from "../utils/statistics.js";
-import {SKILL_DROP_DOWN, SKILL_TABLE, ABILITIES} from "../utils/constants.js";
-import {Player} from "../objects/player.js";
+import { screenshot } from '../utils/screenshotUtils.js';
+import { doLog } from '../utils/logUtils.js';
+import { playerValues } from './playerDetails.js';
+import { cookieBar } from "../browser/cookieBar.js";
+import { waitRandomTime } from "../utils/timeUtils.js";
+import { registerTransferNumber } from "../utils/statistics.js";
+import { SKILL_DROP_DOWN, SKILL_TABLE, ABILITIES, MAX_FEATURE_COACH_LEVEL } from "../utils/constants.js";
+import { Player } from "../objects/player.js";
 
 export const searchNewPlayer = async (browser, page, config) => {
     doLog('  - Click on transfer page');
-    const transferButton = await page.$('.scTransfer');
+    let transferButton = null;
+    try {
+        transferButton = await page.$('.scTransfer');
+    } catch (error) {
+        doLog('!!! Transfer button not found: ' + error);
+        return null;
+    }
     await cookieBar(page);
     await waitRandomTime();
     // Search page
@@ -18,43 +24,63 @@ export const searchNewPlayer = async (browser, page, config) => {
         doLog('  - Error in page: no transfer button found!');
         return null;
     }
-    await transferButton.click();
+    await Promise.all([
+        transferButton.click(),
+        page.waitForNavigation()
+    ]);
     doLog();
     doLog('## Search page');
-    await page.waitForNavigation();
     await screenshot(page, 'search_page');
     doLog('  - Clean previous selection');
     const clearLink = await page.$('#ctl00_ctl00_CPContent_CPMain_butClear');
-    await clearLink.click();
-    await screenshot(page, 'search_clean');
-    await waitRandomTime();
-    doLog('  - Show advanced search options');
-    const chkShowAdvanced = await page.$('#ctl00_ctl00_CPContent_CPMain_chkShowAdvanced');
-    const isAdvancedChecked = await chkShowAdvanced.evaluate(el => el.checked);
-    if (!isAdvancedChecked) {
-        await chkShowAdvanced.click();
+    if (clearLink) {
+        await Promise.all([
+            clearLink.click(),
+            page.waitForNavigation()
+        ]);
+        await screenshot(page, 'search_clean');
     }
     await waitRandomTime();
-    doLog('  - Select min age: '+config.age.min);
+    doLog('  - Show advanced search options');
+    let chkShowAdvanced = null;
+    try {
+        chkShowAdvanced = await page.$('#ctl00_ctl00_CPContent_CPMain_chkShowAdvanced');
+    } catch (error) {
+        console.log('chkShowAdvanced not found');
+        return null;
+    }
+    if (!chkShowAdvanced) {
+        console.log('chkShowAdvanced null');
+        return null;
+    }
+    const isAdvancedChecked = await chkShowAdvanced.evaluate(el => el.checked);
+    if (!isAdvancedChecked) {
+        await Promise.all([
+            chkShowAdvanced.click(),
+            page.waitForNavigation()
+        ]);
+    }
+    await waitRandomTime();
+    doLog('  - Select min age: ' + config.age.min);
     const minAgeIntegerPart = Math.trunc(config.age.min);
     const minAgeDecimalPart = Math.ceil((config.age.min - minAgeIntegerPart) * 100);
     await page.select('#ctl00_ctl00_CPContent_CPMain_ddlAgeMin', minAgeIntegerPart.toString());
     await page.select('#ctl00_ctl00_CPContent_CPMain_ddlAgeDaysMin', minAgeDecimalPart.toString());
     await waitRandomTime();
-    doLog('  - Select max age: '+config.age.max);
+    doLog('  - Select max age: ' + config.age.max);
     const maxAgeIntegerPart = Math.trunc(config.age.max);
     const maxAgeDecimalPart = Math.ceil((config.age.max - maxAgeIntegerPart) * 100);
     await page.select('#ctl00_ctl00_CPContent_CPMain_ddlAgeMax', maxAgeIntegerPart.toString());
     await page.select('#ctl00_ctl00_CPContent_CPMain_ddlAgeDaysMax', maxAgeDecimalPart.toString());
     await waitRandomTime();
     let skills = config.skills;
-    for (var i=0; i < config.skills.length; i++) {
+    for (var i = 0; i < config.skills.length; i++) {
         let skill = skills[i];
         doLog('  - Select \'' + SKILL_DROP_DOWN[skill.type] + '\'');
-        await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill'+(i+1), skill.type.toString());
+        await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill' + (i + 1), skill.type.toString());
         await waitRandomTime();
         doLog('  - Select level from \'' + SKILL_TABLE[skill.min] + '\' (' + skill.min.toString() + ')');
-        await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill'+(i+1)+'Min', skill.min.toString());
+        await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill' + (i + 1) + 'Min', skill.min.toString());
         await waitRandomTime();
         doLog('  - Select level to \'' + SKILL_TABLE[skill.max] + '\' (' + skill.max.toString() + ')');
         await page.select('#ctl00_ctl00_CPContent_CPMain_ddlSkill' + (i + 1) + 'Max', skill.max.toString());
@@ -76,7 +102,7 @@ export const searchNewPlayer = async (browser, page, config) => {
     await waitRandomTime();
     const abilities = config.abilities;
     if (abilities) {
-        for (var i=0; i < abilities.length; i++) {
+        for (var i = 0; i < abilities.length; i++) {
             let ability = abilities[i];
             doLog('  - Ability \'' + ABILITIES[ability] + '\' selected');
             const labelId = '#ctl00_ctl00_CPContent_CPMain_chkSpecialty' + ability.toString();
@@ -88,10 +114,10 @@ export const searchNewPlayer = async (browser, page, config) => {
     await screenshot(page, 'search_selection');
     const searchButton = await page.$('#ctl00_ctl00_CPContent_CPMain_butSearch');
     await waitRandomTime();
-    await searchButton.click();
-    doLog();
-    doLog('## Search page results');
-    await page.waitForNavigation();
+    await Promise.all([
+        searchButton.click(),
+        page.waitForNavigation()
+    ]);
     await screenshot(page, 'search_results');
     const players = await page.$$('#mainBody > div > div.flex h3 > a');
     const playersHandle = await Promise.all(
@@ -116,7 +142,7 @@ export const searchNewPlayer = async (browser, page, config) => {
     doLog('advMedian:  ' + parseInt(stats.advMedian).toPrintablePrice());
     doLog('minDate:    ' + stats.minDate.toDateTime());
     doLog('maxDate:    ' + stats.maxDate.toDateTime());
-    return filteringPlayers(result, config);
+    return result;
 };
 
 export const filteringPlayers = (players, filters) => {
@@ -138,7 +164,7 @@ export const filteringPlayers = (players, filters) => {
     });
     const numberPlayers = players.length;
     const numberFilteredPlayers = filteredPlayers.length;
-    doLog('- ' + (numberPlayers - numberFilteredPlayers) + ' players filtered on ' + numberPlayers + ' (' + parseInt(((numberPlayers-numberFilteredPlayers)/numberPlayers)*100) + '%)');
+    doLog('- ' + (numberPlayers - numberFilteredPlayers) + ' players filtered on ' + numberPlayers + ' (' + parseInt(((numberPlayers - numberFilteredPlayers) / numberPlayers) * 100) + '%)');
     filteredPlayers = filteredPlayers.sort((p1, p2) => {
         const d1 = new Date(p1.date);
         const d2 = new Date(p2.date);
@@ -149,6 +175,27 @@ export const filteringPlayers = (players, filters) => {
         return 0;
     });
     return filteredPlayers.shift();
+}
+
+export const filteringFeatureCoachPlayers = (players) => {
+    doLog();
+    doLog('- Filtering future coach...');
+    const numberPlayers = players.length;
+    let filteredPlayers = players.filter((player) => {
+        if (player.median === '') return false;
+        let timeLimit = new Date();
+        timeLimit.setMinutes(timeLimit.getMinutes() + 10);
+        //SKILL_TABLE[player.keeper] = [ 'keeper', player.keeper ];
+        return SKILL_TABLE.indexOf(player.keeper) <= MAX_FEATURE_COACH_LEVEL
+            && SKILL_TABLE.indexOf(player.defender) <= MAX_FEATURE_COACH_LEVEL
+            && SKILL_TABLE.indexOf(player.playmaker) <= MAX_FEATURE_COACH_LEVEL
+            && SKILL_TABLE.indexOf(player.winger) <= MAX_FEATURE_COACH_LEVEL
+            && SKILL_TABLE.indexOf(player.scorer) <= MAX_FEATURE_COACH_LEVEL;
+        // && player.date.getTime() > timeLimit.getTime();
+    });
+    const numberFilteredPlayers = filteredPlayers.length;
+    doLog('- ' + (numberPlayers - numberFilteredPlayers) + ' players filtered on ' + numberPlayers + ' (' + parseInt(((numberPlayers - numberFilteredPlayers) / numberPlayers) * 100) + '%)');
+    return filteredPlayers;
 }
 
 export const statsPlayers = (players) => {

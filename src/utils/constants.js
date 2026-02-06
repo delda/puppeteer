@@ -7,5 +7,7 @@ export const SKILL_TABLE = ['inesistente', 'disastroso', 'tremendo', 'scarso', '
 export const SKILL_DROP_DOWN = ['', 'Parate', '', 'Difesa', 'Regia', 'Cross', 'Attacco', 'Calci piazzati', 'Passaggi', 'Esperienza', 'Carisma'];
 export const ABILITIES = ['', 'Tecnico', 'Veloce', 'Potente', 'Imprevedibile', 'Colpo di testa', 'Coriaceo', '', 'Trascinatore'];
 
-Object.freeze({GENTLENESS_TABLE, AGGRESSIVENESS_TABLE, HONESTY_TABLE, FORM_TABLE, STAMINA_TABLE, SKILL_TABLE, SKILL_DROP_DOWN, ABILITIES});
+export const MAX_FEATURE_COACH_LEVEL = 10;
+
+Object.freeze({GENTLENESS_TABLE, AGGRESSIVENESS_TABLE, HONESTY_TABLE, FORM_TABLE, STAMINA_TABLE, SKILL_TABLE, SKILL_DROP_DOWN, ABILITIES, MAX_FEATURE_COACH_LEVEL});
 
